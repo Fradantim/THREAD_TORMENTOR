@@ -17,8 +17,8 @@
 		<text>Holaaa 2</text>
 		<next>6</next>
 	</job>
-	<job id="4" type="Echoer">
-		<text>5</text>
+	<job id="4" type="Sleeper">
+		<time>5</time>
 		<next>6</next>
 	</job>
 	<job id="5" type="Echoer">

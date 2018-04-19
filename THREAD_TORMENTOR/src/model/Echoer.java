@@ -4,12 +4,9 @@ import java.util.List;
 
 public class Echoer extends Job implements Work{
 
-	private static int numerador;
 	private String str;
 	
 	public Echoer (String str){
-		numerador++;
-		id=numerador;
 		this.str=str;
 	}
 	

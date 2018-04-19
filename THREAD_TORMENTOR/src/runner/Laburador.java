@@ -4,8 +4,9 @@ import model.Work;
 
 public class Laburador implements Runnable{
 
-	public static final int STATUS_CORRIENDO  = 0;
-	public static final int STATUS_FINALIZADO = 1;
+	public static final int STATUS_CORRIENDO  = -1;
+	public static final int STATUS_FINALIZADO_OK = 0;
+	public static final int STATUS_FINALIZADO_ERROR = 1;
 	Entregador entregador;
 	
 	private static int numerador;
@@ -23,24 +24,33 @@ public class Laburador implements Runnable{
 	@Override
 	public void run() {
 		Work laburo= entregador.getLaburo();
+		say("START THREAD");
 		while (laburo!=null) {
+			if(laburo.getId()!=0) {
+				say("START "+laburo.toString());
+			}else {
+				say("START INDUCED "+laburo.toString());
+			}
+			
 			int result = laburo.execute();
 			if(result != 0) {
+				say("ERROR "+laburo.toString());
+				status=STATUS_FINALIZADO_ERROR;
 				entregador.halt();
 				return;
-			}
+			} 
 			if(laburo.getId()!=0) {
 				entregador.addTerminado(laburo.getId());
 				if(laburo.getNext()!=null && laburo.getNext().size()>0) {
 					entregador.recoverJobs(laburo.getNext());
 				}
-				say(laburo.toString());
+				say("END "+laburo.toString());
 			} else {
-				say("Sleep inducido "+ laburo.toString());
+				say("END INDUCED "+laburo.toString());
 			}
 			laburo= entregador.getLaburo();
 		}
-		status=STATUS_FINALIZADO;
+		status=STATUS_FINALIZADO_OK;
 	}
 
 	public int getStatus() {

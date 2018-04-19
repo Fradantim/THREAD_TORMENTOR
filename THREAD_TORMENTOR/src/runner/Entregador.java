@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,37 +23,30 @@ import model.Work;
 
 public class Entregador {
 	
+	public static final int STATUS_OK = 0;
+	public static final int STATUS_WORK_ERROR = 1;
+	public static final int STATUS_SLEEP_ERROR = 2;
+	
 	private static Entregador instancia;
 	
-	public static Entregador getInstance(){ 
-		try {
-			return getInstance("");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public static Entregador getInstance(String inputFile) throws ParserConfigurationException, SAXException, IOException {
+	public static Entregador getInstance() {
 		if (instancia == null) {
 			instancia = new Entregador();
-			instancia.ready(inputFile);
+			instancia.ready();
 		}
 		return instancia;
 	}
 
-	public void ready(String inputFile) throws ParserConfigurationException, SAXException, IOException {
+	public void ready() {
 		laburos= new ArrayList<>();
 		allJobs= new ArrayList<>();
 		terminados= new ArrayList<>();
-		getJobsFromXml(inputFile);
-		addLaburo(allJobs.get(0));
 	}
 	
 	private List <Work> laburos;
 	private List <Integer> terminados;
 	private List <Work> allJobs;
+	private int returnStatus= STATUS_OK;
 	private int sleeperTime;
 	
 	private boolean noMoreWorks=false;
@@ -94,6 +88,7 @@ public class Entregador {
 	}
 
 	public void halt() {
+		returnStatus=STATUS_WORK_ERROR;
 		noMoreWorks();
 	}
 	
@@ -132,52 +127,102 @@ public class Entregador {
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Node nNode = nList.item(temp);
 			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-				Element eElement = (Element) nNode;
-				Work work;
-				switch (eElement.getAttribute("type")) {
-		        case "Sleeper":
-		        	System.out.println(Integer.parseInt(eElement.getElementsByTagName("time").item(0).getTextContent()));
-		             work = new Sleeper(Integer.parseInt(eElement.getElementsByTagName("time").item(0).getTextContent()));
-		             break;
-		         case "Echoer":
-		             work = new Echoer(eElement.getElementsByTagName("text").item(0).getTextContent());
-		        	 break;
-		         case "Finisher":
-		             work = new Finisher();
-		        	 break;
-		         default:
-		             throw new ParserConfigurationException();
-				}
-				String next= null;
-				work.setId(Integer.parseInt(eElement.getAttribute("id")));
-				try {
-					 next = eElement.getElementsByTagName("next").item(0).getTextContent();
-				} catch(NullPointerException e) {
-					
-				}
-	            String previous = null;
-	            try {
-	            	previous = eElement.getElementsByTagName("previous").item(0).getTextContent();
-	            } catch(NullPointerException e) {
-					
-				}
-	            ArrayList<Integer> nextArr= new ArrayList<>();
-	            ArrayList<Integer> previousArr= new ArrayList<>();
-	            if(next != null && !next.equals("")) {
-	            	for(String str : next.split(";")) {
-	            		nextArr.add(new Integer(Integer.parseInt(str)));
-	            	}
-	            }
-	            if(previous != null && !previous.equals("")) {
-	            	for(String str : previous.split(";")) {
-	            		previousArr.add(new Integer(Integer.parseInt(str)));
-	            	}
-	            }
-	            work.setNext(nextArr);
-	            work.setPrevious(previousArr);
-	            allJobs.add(work);
+				
+	            allJobs.add(getWorkByElement((Element) nNode));
 				}
 			}
+	}
+
+	private Work getWorkByElement(Element eElement) throws ParserConfigurationException {
+		Work work;
+		switch (eElement.getAttribute("type")) {
+        case "Sleeper":
+             work = new Sleeper(Integer.parseInt(eElement.getElementsByTagName("time").item(0).getTextContent()));
+             break;
+         case "Echoer":
+             work = new Echoer(eElement.getElementsByTagName("text").item(0).getTextContent());
+        	 break;
+         case "Finisher":
+             work = new Finisher();
+        	 break;
+         default:
+             throw new ParserConfigurationException();
+		}
+		String next= null;
+		work.setId(Integer.parseInt(eElement.getAttribute("id")));
+		try {
+			 next = eElement.getElementsByTagName("next").item(0).getTextContent();
+		} catch(NullPointerException e) {
+			
+		}
+        String previous = null;
+        try {
+        	previous = eElement.getElementsByTagName("previous").item(0).getTextContent();
+        } catch(NullPointerException e) {
+			
+		}
+        ArrayList<Integer> nextArr= new ArrayList<>();
+        ArrayList<Integer> previousArr= new ArrayList<>();
+        if(next != null && !next.equals("")) {
+        	for(String str : next.split(";")) {
+        		nextArr.add(new Integer(Integer.parseInt(str)));
+        	}
+        }
+        if(previous != null && !previous.equals("")) {
+        	for(String str : previous.split(";")) {
+        		previousArr.add(new Integer(Integer.parseInt(str)));
+        	}
+        }
+        work.setNext(nextArr);
+        work.setPrevious(previousArr);
+		return work;
+	}
+	
+	public int getReturnStatus() {
+		return returnStatus;
+	}
+
+	public void setReturnStatus(int returnStatus) {
+		this.returnStatus = returnStatus;
+	}
+	
+	
+
+	public int execute(String inputFile, int canthilos, int sleeperTime, int tpoEsperaEntreChusmeos) throws ParserConfigurationException, SAXException, IOException {
+		getJobsFromXml(inputFile);
+		setSleeperTime(sleeperTime);
+		addLaburo(allJobs.get(0));
+		
+		boolean hilosCorriendo= true;
+		
+		ArrayList<Laburador> laburadores = new ArrayList<>();
+		
+		for(int i=0; i< canthilos; i++) {
+			laburadores.add(new Laburador());
+		}
+		
+		for(int i=0; i< canthilos; i++) {
+			(new Thread(laburadores.get(i))).start();
+		}
+		
+		while(hilosCorriendo) {
+			System.out.println("[D]: Subhilos corriendo, espero "+tpoEsperaEntreChusmeos+"s y chusmeo de nuevo.");
+			try {
+				TimeUnit.SECONDS.sleep(tpoEsperaEntreChusmeos);
+			} catch (InterruptedException e) {
+				//e.printStackTrace();
+				System.out.println("\"[D]: ERROR. Sleep "+tpoEsperaEntreChusmeos+ "s fallo:"+e.getMessage());
+				returnStatus=STATUS_SLEEP_ERROR;
+				return returnStatus;
+			}
+			hilosCorriendo= false;
+			for(int i=0; i< canthilos; i++) {
+				if(laburadores.get(i).getStatus() == Laburador.STATUS_CORRIENDO && !hilosCorriendo) {
+					hilosCorriendo=true;
+				}
+			}
+		}
+		return returnStatus;
 	}
 	
 }
