@@ -1,6 +1,6 @@
 package runner;
 
-import model.Laburo;
+import model.Work;
 
 public class Laburador implements Runnable{
 
@@ -22,10 +22,22 @@ public class Laburador implements Runnable{
 	
 	@Override
 	public void run() {
-		Laburo laburo= entregador.getLaburo();
+		Work laburo= entregador.getLaburo();
 		while (laburo!=null) {
-			laburo.execute();
-			System.out.println("Thread:"+id+"	Item:"+laburo.getId() +"	("+laburo.getTime()+"s)");
+			int result = laburo.execute();
+			if(result != 0) {
+				entregador.halt();
+				return;
+			}
+			if(laburo.getId()!=0) {
+				entregador.addTerminado(laburo.getId());
+				if(laburo.getNext()!=null && laburo.getNext().size()>0) {
+					entregador.recoverJobs(laburo.getNext());
+				}
+				say(laburo.toString());
+			} else {
+				say("Sleep inducido "+ laburo.toString());
+			}
 			laburo= entregador.getLaburo();
 		}
 		status=STATUS_FINALIZADO;
@@ -39,5 +51,7 @@ public class Laburador implements Runnable{
 		this.status = status;
 	}
 
-	
+	public void say(String in) {
+		System.out.println("[T"+id+"]: "+in);
+	}
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<chain>
+	<job id="1" type="Echoer">
+		<text>2</text>
+		<next>2</next>
+	</job>
+	<job id="2" type="Echoer">
+		<text>5</text>
+		<next>3;4;5</next>
+	</job>
+	<job id="6" type="Echoer">
+		<text>5</text>
+		<previous>3;4;5</previous>
+		<next>9</next>
+	</job>
+	<job id="3" type="Echoer">
+		<text>Holaaa 2</text>
+		<next>6</next>
+	</job>
+	<job id="4" type="Echoer">
+		<text>5</text>
+		<next>6</next>
+	</job>
+	<job id="5" type="Echoer">
+		<text>4444444</text>
+		<next>6</next>
+	</job>
+	<job id="9" type="Finisher">
+		<previous>6</previous>
+	</job>
+
+</chain>

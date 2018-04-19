@@ -1,29 +1,38 @@
 package main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import model.Laburo;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 import runner.Entregador;
 import runner.Laburador;
 
 public class Main {
 	public static void main (String args[]) {
-		int canthilos = 10;
-		int cantLaburos = 100;
-		int maxSegs = 5;
+		int canthilos = 5;
 		int tpoEsperaEntreChusmeos= 5;
 		
-		Entregador entregador = Entregador.getInstance();
+		String inputFile="input.xml";
 		
-		ArrayList<Laburo> laburos = new ArrayList<>();
-		ArrayList<Laburador> laburadores = new ArrayList<>();
-		
-		for(int i=0; i< cantLaburos; i++) {
-			laburos.add(new Laburo(maxSegs));
+		Entregador entregador;
+		try {
+			entregador = Entregador.getInstance(inputFile);
+		} catch (ParserConfigurationException e1) {
+			e1.printStackTrace();
+			return;
+		} catch (SAXException e1) {
+			e1.printStackTrace();
+			return;
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return;
 		}
 		
-		entregador.setLaburos(laburos);
+		ArrayList<Laburador> laburadores = new ArrayList<>();
 		
 		for(int i=0; i< canthilos; i++) {
 			laburadores.add(new Laburador());
