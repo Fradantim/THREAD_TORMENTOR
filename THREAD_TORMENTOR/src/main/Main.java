@@ -82,12 +82,11 @@ public class Main {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
-		} finally {
-			((ConfigurableApplicationContext)inputLoteContext).close();
 		}
 		
 		System.out.println("Subhilos terminaron de correr, sigo con otras operaciones.");
 		System.out.println("FINMAIN");
+		((ConfigurableApplicationContext)inputLoteContext).close();
 		System.exit(result);
 	}
 }

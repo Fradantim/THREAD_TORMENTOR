@@ -29,25 +29,24 @@ public class Laburador implements Runnable{
 	public void run() {
 		Work laburo= entregador.getLaburo();
 		say("START THREAD");
-		while (laburo!=null) {
-			if(laburo.getId()!=0) {
-				say("START "+laburo.toString());
-			}else {
-				say("START INDUCED "+laburo.toString());
-			}
-			
+		while (laburo!=null) {			
 			int result = 1;
 			try {
+				if(laburo.getId()!=0) {
+					say("START "+laburo.toString());
+				}else {
+					say("START INDUCED "+laburo.toString());
+				}
 				result = laburo.execute(vars);
 			}catch (Exception e ) {
-				say("ERROR "+laburo.toString());
+				say("ERROR EXCEPTION"+laburo.toString());
 				e.printStackTrace();
 				status=STATUS_FINALIZADO_ERROR;
 				entregador.halt();
 				return;
 			}
 			if(result != 0) {
-				say("ERROR "+laburo.toString());
+				say("ERROR "+laburo.toString()+" err:"+result);
 				status=STATUS_FINALIZADO_ERROR;
 				entregador.halt();
 				return;

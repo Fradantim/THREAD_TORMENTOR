@@ -39,6 +39,20 @@ public class TestSpring {
 			
 			System.out.println(worksArr.get(0).equals(worksArr.get(0)));
 			System.out.println(worksArr.get(0).equals(worksArr.get(1)));
+
+			
+			Map<String, String> strs = inputLoteContext.getBeansOfType(String.class);
+			
+			
+			System.out.println("C'est fini "+works.size());
+			
+			System.out.println("Strings");
+			for(String key: works.keySet()) {
+				
+				System.out.println(key+" "+strs.get(key));
+				
+			}
+			
 			
 			((ConfigurableApplicationContext)inputLoteContext).close();
 			

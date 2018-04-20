@@ -23,7 +23,7 @@ public abstract class Job {
 	
 	private static int numerador;
 	protected int id;
-	protected String type;
+	protected String workingPath;
 	
 	public Job () {
 		id=++numerador;
@@ -65,21 +65,25 @@ public abstract class Job {
 		return outputMap;
 	}
 	
-	protected int execCMD(String commandToExecute, String consoleOutput) throws IOException, InterruptedException {
+	protected int execCMD(String inputCommand, String consoleOutput) throws IOException, InterruptedException {
 		BufferedWriter outputWriter = null;
 		if(consoleOutput!=null && !"".equals(consoleOutput)) {
 			outputWriter = new BufferedWriter(new FileWriter(consoleOutput));
 		}
 		
-		ProcessBuilder builder = new ProcessBuilder(("cmd.exe /c "+commandToExecute).split(" "));
+		String commandToExecute = "cmd.exe /c "+inputCommand;
+		ProcessBuilder builder = new ProcessBuilder((commandToExecute).split(" "));
 		builder.redirectErrorStream(true);
 		Process p = builder.start();
-		BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		BufferedReader buffReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 		String line;
-		while ((line= r.readLine())!=null) {
+		outputWriter.write(commandToExecute+"\r\n");
+		while ((line= buffReader.readLine())!=null) {
 			outputWriter.write(line+"\r\n");
 		}
 		p.destroy();
+		buffReader.close();
+		outputWriter.close();
 		return p.exitValue(); 
 	}
 	
@@ -94,4 +98,13 @@ public abstract class Job {
 	    }
 	    return false;
 	}
+	
+	public String getWorkingPath() {
+		return workingPath;
+	}
+
+	public void setWorkingPath(String workingPath) {
+		this.workingPath = workingPath;
+	}
+
 }

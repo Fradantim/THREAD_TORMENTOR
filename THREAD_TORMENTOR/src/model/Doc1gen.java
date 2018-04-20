@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class doc1gen extends Job implements Work{
+public class Doc1gen extends Job implements Work{
 
 	private static final String KEY_OPS_TEMPLATE_FILE = "opsTemplateFile";
 	private static final String KEY_OPS_FINAL_FILE = "OPS_FILE";
@@ -15,14 +15,18 @@ public class doc1gen extends Job implements Work{
 	private String hip;
 	private String opsFile;
 	
+	private List<String> him;	
+	
 	private String EXEC = "---";
 
-	public doc1gen() {
+	public Doc1gen() {
 		
 	}
 	
 	public int execute(Map<String,String> vars) {
 		Properties prop = new Properties();
+		vars.put(KEY_HIP_FILE, hip);
+		vars.put(KEY_OPS_TEMPLATE_FILE, opsFile);
 		
 		try {
 			prop.load(new FileInputStream("doc1gen.properties"));
@@ -70,7 +74,7 @@ public class doc1gen extends Job implements Work{
 	}
 	
 	public String toString() {
-		return getClass().getSimpleName()+" "+ getId() +" ("+vars.get(KEY_OPS_TEMPLATE_FILE)+")";
+		return getClass().getSimpleName()+" "+ getId() +" ("+opsFile+")";
 	}
 
 	public List<Work> getNext(){
@@ -90,7 +94,6 @@ public class doc1gen extends Job implements Work{
 	}
 
 	public void setHip(String hip) {
-		this.vars.put(KEY_HIP_FILE, hip);
 		this.hip = hip;
 	}
 
@@ -99,8 +102,15 @@ public class doc1gen extends Job implements Work{
 	}
 
 	public void setOpsFile(String opsFile) {
-		this.vars.put(KEY_OPS_TEMPLATE_FILE, opsFile);
 		this.opsFile = opsFile;
+	}
+
+	public List<String> getHim() {
+		return him;
+	}
+
+	public void setHim(List<String> him) {
+		this.him = him;
 	}
 
 }
