@@ -1,11 +1,6 @@
 package model;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -13,21 +8,23 @@ import java.util.Properties;
 
 public class doc1gen extends Job implements Work{
 
-	private String opsTemplateFile;
-	private String HIP;
-	private Map<String,String> vars;
+	private static final String KEY_OPS_TEMPLATE_FILE = "opsTemplateFile";
+	private static final String KEY_OPS_FINAL_FILE = "OPS_FILE";
+	private static final String KEY_HIP_FILE = "HIP";
+	
 	private String EXEC = "---";
 	
-	public doc1gen (String HIP, String OpsFile){
-		this.opsTemplateFile=OpsFile;
-		this.HIP=HIP;
+	public doc1gen (Map<String,String> vars , String HIP, String OpsFile){
+		this.vars = vars;
+		this.vars.put(KEY_OPS_TEMPLATE_FILE, OpsFile);
+		this.vars.put(KEY_HIP_FILE, HIP);
 	}
 	
 	public int execute() {
 		Properties prop = new Properties();
 		
 		try {
-			prop.load(new FileInputStream("master.properties"));
+			prop.load(new FileInputStream("doc1gen.properties"));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return STATUS_PROP_ERROR;
@@ -38,34 +35,28 @@ public class doc1gen extends Job implements Work{
 			vars.put(key, prop.getProperty(key));
 		}
 
-		String finalOpsFile = removeFileExtension(opsTemplateFile)+vars.get("MASK")+".ops";
-		vars.put("HIP",HIP);
-		vars.put("OPSFILE", finalOpsFile);
-
+		vars.put(KEY_OPS_FINAL_FILE, vars.get("DOC1_GEN_TMP")+"/"+vars.get("MASK")+"_"+removeFilePathAndExtension(vars.get(KEY_OPS_TEMPLATE_FILE))+".ops");
+		
 		try {
-			createConfigFile(vars.get("DOC1_GEN_SRC")+opsTemplateFile,finalOpsFile );
+			vars=reInterpolate(vars);
+			createConfigFile(vars.get(KEY_OPS_TEMPLATE_FILE),vars.get(KEY_OPS_FINAL_FILE) ,vars);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			return STATUS_CONFIG_GEN_ERROR;			
 		}
 
-		
-		//vars.put("OPSFILE",opsTemplateFile);
-		
 		EXEC = prop.getProperty("EXEC");
-		EXEC=interpolate(EXEC, vars);
+		EXEC = interpolate(EXEC, vars);
 				
-		Runtime rt = Runtime.getRuntime();
-		Process pr;
+		
 		int res=1;
+		String logFile=vars.get("DOC1_SRC_LOG")+"/"+vars.get("MASK")+"_"+getClass().getSimpleName()+"_"+getId()+"_"+removeFilePathAndExtension(vars.get(KEY_OPS_TEMPLATE_FILE))+".log";
 		try {
-			pr = rt.exec("");
-			res=pr.exitValue();
-		} catch (IOException e) {
+			res=execCMD(EXEC, logFile);
+		} catch (Exception e) {
 			e.printStackTrace();
 			return STATUS_CMD_ERROR;
-		}
-		
+		} 
 		return res;
 	}
 	
@@ -78,7 +69,7 @@ public class doc1gen extends Job implements Work{
 	}
 	
 	public String toString() {
-		return getClass().getSimpleName()+" "+ getId() +" ("+HIP+" "+opsTemplateFile+")";
+		return getClass().getSimpleName()+" "+ getId() +" ("+vars.get(KEY_OPS_TEMPLATE_FILE)+")";
 	}
 
 	public List<Integer> getNext(){
@@ -102,18 +93,5 @@ public class doc1gen extends Job implements Work{
 		this.vars = vars;
 	}
 
-	private void createConfigFile(String inputTemplateFile, String outputFile) throws IOException {
-        BufferedReader inputReader = new BufferedReader(new FileReader(new File(inputTemplateFile)));
-        BufferedWriter outputWriter = new BufferedWriter(new FileWriter(outputFile));
-        
-        String readLine = "";
-        while ((readLine = inputReader.readLine()) != null) {
-        	outputWriter.write(interpolate(readLine, vars));
-        }
-        
-        inputReader.close();
-        outputWriter.close();
-	}
-	
 }
 

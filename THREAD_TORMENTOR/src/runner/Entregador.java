@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -20,6 +21,7 @@ import model.Echoer;
 import model.Finisher;
 import model.Sleeper;
 import model.Work;
+import model.doc1gen;
 
 public class Entregador {
 	
@@ -29,7 +31,7 @@ public class Entregador {
 	
 	private static Entregador instancia;
 	
-	public static Entregador getInstance() {
+	public static synchronized Entregador getInstance() {
 		if (instancia == null) {
 			instancia = new Entregador();
 			instancia.ready();
@@ -37,7 +39,7 @@ public class Entregador {
 		return instancia;
 	}
 
-	public void ready() {
+	private void ready() {
 		laburos= new ArrayList<>();
 		allJobs= new ArrayList<>();
 		terminados= new ArrayList<>();
@@ -48,14 +50,15 @@ public class Entregador {
 	private List <Work> allJobs;
 	private int returnStatus= STATUS_OK;
 	private int sleeperTime;
+	private Map<String,String> vars;
 	
 	private boolean noMoreWorks=false;
 	
-	public void addLaburos(List <Work> nuevosLaburos) {
+	public synchronized void addLaburos(List <Work> nuevosLaburos) {
 		laburos.addAll(nuevosLaburos);
 	}
 	
-	public void addLaburo(Work nuevosLaburo) {
+	public synchronized void addLaburo(Work nuevosLaburo) {
 		laburos.add(nuevosLaburo);
 		
 	}
@@ -64,7 +67,7 @@ public class Entregador {
 		noMoreWorks=true;
 	}
 	
-	public Work getLaburo() {
+	public synchronized Work getLaburo() {
 		if(noMoreWorks)
 			return null;
 		if(laburos.size()>0) {
@@ -92,13 +95,13 @@ public class Entregador {
 		noMoreWorks();
 	}
 	
-	public void recoverJobs(List<Integer> jobIds) {
+	public synchronized void recoverJobs(List<Integer> jobIds) {
 		for(int jobId: jobIds) {
 			recoverJob(jobId);
 		}
 	}
 	
-	public void recoverJob(int jobId) {
+	public synchronized void recoverJob(int jobId) {
 		Work newWork = null;
 		for(Work work: allJobs) {
 			if(work.getId()==jobId) {
@@ -145,6 +148,9 @@ public class Entregador {
          case "Finisher":
              work = new Finisher();
         	 break;
+         case "Doc1gen":
+             work = new doc1gen(vars,eElement.getElementsByTagName("HIP").item(0).getTextContent(),eElement.getElementsByTagName("OPS_TEMPLATE_FILE").item(0).getTextContent());
+        	 break;
          default:
              throw new ParserConfigurationException();
 		}
@@ -188,11 +194,12 @@ public class Entregador {
 	
 	
 
-	public int execute(String inputFile, int canthilos, int sleeperTime, int tpoEsperaEntreChusmeos) throws ParserConfigurationException, SAXException, IOException {
+	public int execute(String inputFile, int canthilos, int sleeperTime, int tpoEsperaEntreChusmeos, Map<String,String> vars) throws ParserConfigurationException, SAXException, IOException {
+		this.vars=vars;
 		getJobsFromXml(inputFile);
 		setSleeperTime(sleeperTime);
 		addLaburo(allJobs.get(0));
-		
+				
 		boolean hilosCorriendo= true;
 		
 		ArrayList<Laburador> laburadores = new ArrayList<>();

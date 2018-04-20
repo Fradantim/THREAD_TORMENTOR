@@ -14,40 +14,55 @@ import runner.Entregador;
 
 public class Main {
 	public static void main (String args[]) {
-		
 		int result=0;
 		Properties prop = new Properties();
 		
 		try {
 			prop.load(new FileInputStream("master.properties"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(1);
 			return;
 		}
 		
-		String MASK ="";//CICLO_ESQ_LOTE_TMSPTM...
+		
 		Map<String,String> vars = new HashMap<>();
 		for(Object obj: prop.keySet()) {
 			String key = new String((String)obj);
 			vars.put(key, prop.getProperty(key));
 		}
-		vars.put("MASK", MASK);
 		
-		int canthilos = Integer.parseInt(prop.getProperty("canthilos"));
-		int tpoEsperaEntreChusmeos= Integer.parseInt(prop.getProperty("tpoEsperaEntreChusmeos"));
-		int sleeperTime = Integer.parseInt(prop.getProperty("sleeperTime"));
+		prop = new Properties();
+		try {
+			prop.load(new FileInputStream("inputParams.properties"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+			return;
+		}
+
+		for(Object obj: prop.keySet()) {
+			String key = new String((String)obj);
+			vars.put(key, prop.getProperty(key));
+		}
+
+		/* UBICAME BIEN*/
+		vars.put("NEGOCIO", "movil");
+		vars.put("LOTE_ID", "ML");
+		
+		int canthilos = Integer.parseInt(vars.get("canthilos"));
+		int tpoEsperaEntreChusmeos= Integer.parseInt(vars.get("tpoEsperaEntreChusmeos"));
+		int sleeperTime = Integer.parseInt(vars.get("sleeperTime"));
 		
 		
 		//JARPATH new File(MyClass.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-		String inputFile="input.xml";
+		String inputFile="CHAIN_15.xml";
 		
 		Entregador entregador = Entregador.getInstance();
 		
 		
 		try {
-			result=entregador.execute(inputFile, canthilos, sleeperTime, tpoEsperaEntreChusmeos);
+			result=entregador.execute(inputFile, canthilos, sleeperTime, tpoEsperaEntreChusmeos, vars);
 		} catch (ParserConfigurationException e1) {
 			e1.printStackTrace();
 		} catch (SAXException e1) {

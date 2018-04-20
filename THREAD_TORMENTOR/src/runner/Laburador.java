@@ -32,7 +32,16 @@ public class Laburador implements Runnable{
 				say("START INDUCED "+laburo.toString());
 			}
 			
-			int result = laburo.execute();
+			int result = 1;
+			try {
+				result = laburo.execute();
+			}catch (Exception e ) {
+				say("ERROR "+laburo.toString());
+				e.printStackTrace();
+				status=STATUS_FINALIZADO_ERROR;
+				entregador.halt();
+				return;
+			}
 			if(result != 0) {
 				say("ERROR "+laburo.toString());
 				status=STATUS_FINALIZADO_ERROR;

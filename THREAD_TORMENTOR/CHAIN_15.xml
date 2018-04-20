@@ -4,8 +4,9 @@
 		<text>2</text>
 		<next>2</next>
 	</job>
-	<job id="2" type="Echoer">
-		<text>5</text>
+	<job id="2" type="Doc1gen">
+		<HIP>$DOC1_GEN_SRC$/AMDOCS_T3_CICLICA.hip</HIP>
+		<OPS_TEMPLATE_FILE>$DOC1_GEN_SRC$/config_doc1gen_N.ops</OPS_TEMPLATE_FILE>
 		<next>3;4;5</next>
 	</job>
 	<job id="6" type="Echoer">
