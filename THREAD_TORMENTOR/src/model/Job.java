@@ -3,18 +3,14 @@ package model;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import runner.SyncPipe;
 
 public abstract class Job {
 	
@@ -23,12 +19,15 @@ public abstract class Job {
 	protected static final int STATUS_CONFIG_GEN_ERROR=3;
 	protected Map<String,String> vars;
 	
+	private static int numerador;
 	protected int id;
 	protected String type;
-	protected List<Integer> next;
-	protected List<Integer> previous;
+	protected List<Work> next;
+	protected List<Work> previous;
 	
-	public Job () {	}
+	public Job () {
+		id=++numerador;
+	}
 	
 	protected String interpolate(String str, Map<String,String> vars) {
 		for(String var: vars.keySet()) {
@@ -82,5 +81,17 @@ public abstract class Job {
 		}
 		p.destroy();
 		return p.exitValue(); 
+	}
+	
+	@Override
+	public boolean equals(Object other){
+	    if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof Job))return false;
+	    Job otherMyClass = (Job)other;
+	    if(this.id == otherMyClass.id) {
+	    	return true;
+	    }
+	    return false;
 	}
 }

@@ -50,7 +50,6 @@ public class Entregador {
 	private List <Work> allJobs;
 	private int returnStatus= STATUS_OK;
 	private int sleeperTime;
-	private Map<String,String> vars;
 	
 	private boolean noMoreWorks=false;
 	
@@ -95,93 +94,28 @@ public class Entregador {
 		noMoreWorks();
 	}
 	
-	public synchronized void recoverJobs(List<Integer> jobIds) {
-		for(int jobId: jobIds) {
-			recoverJob(jobId);
+	public synchronized void recoverJobs(List<Work> works) {
+		for(Work work: works) {
+			recoverJob(work);
 		}
 	}
 	
-	public synchronized void recoverJob(int jobId) {
+	public synchronized void recoverJob(Work work) {
 		Work newWork = null;
-		for(Work work: allJobs) {
-			if(work.getId()==jobId) {
+		for(Work innerWork: allJobs) {
+			if(innerWork.equals(work)) {
 				newWork=work;
 			}
 		}
 		if(newWork==null) {
 			return;
 		}
-		for(int id: newWork.getPrevious()) {
-			if(!terminados.contains(id)) {
+		for(Work previousWork: newWork.getPrevious()) {
+			if(!terminados.contains(previousWork.getId())) {
 				return;
 			}
 		}
 		addLaburo(newWork);
-	}
-	
-	private void getJobsFromXml(String inputFile) throws ParserConfigurationException, SAXException, IOException {
-		File fXmlFile = new File(inputFile);
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(fXmlFile);
-		doc.getDocumentElement().normalize();
-		NodeList nList = doc.getElementsByTagName("job");
-				
-		for (int temp = 0; temp < nList.getLength(); temp++) {
-			Node nNode = nList.item(temp);
-			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-				
-	            allJobs.add(getWorkByElement((Element) nNode));
-				}
-			}
-	}
-
-	private Work getWorkByElement(Element eElement) throws ParserConfigurationException {
-		Work work;
-		switch (eElement.getAttribute("type")) {
-        case "Sleeper":
-             work = new Sleeper(Integer.parseInt(eElement.getElementsByTagName("time").item(0).getTextContent()));
-             break;
-         case "Echoer":
-             work = new Echoer(eElement.getElementsByTagName("text").item(0).getTextContent());
-        	 break;
-         case "Finisher":
-             work = new Finisher();
-        	 break;
-         case "Doc1gen":
-             work = new doc1gen(vars,eElement.getElementsByTagName("HIP").item(0).getTextContent(),eElement.getElementsByTagName("OPS_TEMPLATE_FILE").item(0).getTextContent());
-        	 break;
-         default:
-             throw new ParserConfigurationException();
-		}
-		String next= null;
-		work.setId(Integer.parseInt(eElement.getAttribute("id")));
-		try {
-			 next = eElement.getElementsByTagName("next").item(0).getTextContent();
-		} catch(NullPointerException e) {
-			
-		}
-        String previous = null;
-        try {
-        	previous = eElement.getElementsByTagName("previous").item(0).getTextContent();
-        } catch(NullPointerException e) {
-			
-		}
-        ArrayList<Integer> nextArr= new ArrayList<>();
-        ArrayList<Integer> previousArr= new ArrayList<>();
-        if(next != null && !next.equals("")) {
-        	for(String str : next.split(";")) {
-        		nextArr.add(new Integer(Integer.parseInt(str)));
-        	}
-        }
-        if(previous != null && !previous.equals("")) {
-        	for(String str : previous.split(";")) {
-        		previousArr.add(new Integer(Integer.parseInt(str)));
-        	}
-        }
-        work.setNext(nextArr);
-        work.setPrevious(previousArr);
-		return work;
 	}
 	
 	public int getReturnStatus() {
@@ -194,9 +128,9 @@ public class Entregador {
 	
 	
 
-	public int execute(String inputFile, int canthilos, int sleeperTime, int tpoEsperaEntreChusmeos, Map<String,String> vars) throws ParserConfigurationException, SAXException, IOException {
-		this.vars=vars;
-		getJobsFromXml(inputFile);
+	public int execute(List<Work> works, int canthilos, int sleeperTime, int tpoEsperaEntreChusmeos, Map<String,String> vars) throws ParserConfigurationException, SAXException, IOException {
+		allJobs=works;
+		
 		setSleeperTime(sleeperTime);
 		addLaburo(allJobs.get(0));
 				
@@ -205,7 +139,7 @@ public class Entregador {
 		ArrayList<Laburador> laburadores = new ArrayList<>();
 		
 		for(int i=0; i< canthilos; i++) {
-			laburadores.add(new Laburador());
+			laburadores.add(new Laburador(vars));
 		}
 		
 		for(int i=0; i< canthilos; i++) {

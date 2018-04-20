@@ -1,5 +1,7 @@
 package runner;
 
+import java.util.Map;
+
 import model.Work;
 
 public class Laburador implements Runnable{
@@ -11,14 +13,16 @@ public class Laburador implements Runnable{
 	
 	private static int numerador;
 	private int id;
+	private Map<String,String> vars;
 	
 	private int status;
 	
-	public Laburador (){
+	public Laburador (Map<String,String> vars){
 		numerador++;
 		id = numerador;
 		entregador = Entregador.getInstance();
 		status=STATUS_CORRIENDO;
+		this.vars= vars;
 	}
 	
 	@Override
@@ -34,7 +38,7 @@ public class Laburador implements Runnable{
 			
 			int result = 1;
 			try {
-				result = laburo.execute();
+				result = laburo.execute(vars);
 			}catch (Exception e ) {
 				say("ERROR "+laburo.toString());
 				e.printStackTrace();

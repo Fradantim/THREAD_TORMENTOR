@@ -1,6 +1,7 @@
 package model;
 
 import java.util.List;
+import java.util.Map;
 
 public class Echoer extends Job implements Work{
 
@@ -10,7 +11,7 @@ public class Echoer extends Job implements Work{
 		this.str=str;
 	}
 	
-	public int execute() {
+	public int execute(Map<String,String> vars) {
 		System.out.println("Echoer("+id+"): "+toString());
 		return 0;
 	}
@@ -27,19 +28,19 @@ public class Echoer extends Job implements Work{
 		return getClass().getSimpleName()+" "+ getId() +" ("+str+")";
 	}
 
-	public List<Integer> getNext(){
+	public List<Work> getNext(){
 		return next;
 	}
 	
-	public void setNext(List<Integer> next) {
+	public void setNext(List<Work> next) {
 		this.next=next;
 	}
 	
-	public List<Integer> getPrevious() {
+	public List<Work> getPrevious() {
 		return previous;
 	}
 
-	public void setPrevious(List<Integer> previous) {
+	public void setPrevious(List<Work> previous) {
 		this.previous=previous;
 		
 	}

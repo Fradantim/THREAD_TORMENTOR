@@ -2,14 +2,19 @@ package main;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.xml.sax.SAXException;
 
+import model.Work;
 import runner.Entregador;
 
 public class Main {
@@ -56,19 +61,29 @@ public class Main {
 		
 		
 		//JARPATH new File(MyClass.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-		String inputFile="CHAIN_15.xml";
+		String inputLoteContextFile="context15.xml";
+		
+		ApplicationContext inputLoteContext = new FileSystemXmlApplicationContext(inputLoteContextFile);
+		Map<String, Work> worksMap = inputLoteContext.getBeansOfType(Work.class);
+		ArrayList<Work> works = new ArrayList<>();
+		
+		for(String key : worksMap.keySet()) {
+			works.add(worksMap.get(key));
+		}
 		
 		Entregador entregador = Entregador.getInstance();
 		
 		
 		try {
-			result=entregador.execute(inputFile, canthilos, sleeperTime, tpoEsperaEntreChusmeos, vars);
+			result=entregador.execute(works, canthilos, sleeperTime, tpoEsperaEntreChusmeos, vars);
 		} catch (ParserConfigurationException e1) {
 			e1.printStackTrace();
 		} catch (SAXException e1) {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
+		} finally {
+			((ConfigurableApplicationContext)inputLoteContext).close();
 		}
 		
 		System.out.println("Subhilos terminaron de correr, sigo con otras operaciones.");

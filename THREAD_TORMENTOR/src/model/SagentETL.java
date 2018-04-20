@@ -15,7 +15,7 @@ public class SagentETL extends Job implements Work{
 		this.inputFileName=inputFileName;
 	}
 	
-	public int execute() {
+	public int execute(Map<String,String> vars) {
 		//TOTO TERMINAR!!!!!!!!
 		Properties prop = new Properties();
 		
@@ -61,19 +61,19 @@ public class SagentETL extends Job implements Work{
 		return getClass().getSimpleName()+" "+ getId() +" ("+inputFileName+")";
 	}
 
-	public List<Integer> getNext(){
+	public List<Work> getNext(){
 		return next;
 	}
 	
-	public void setNext(List<Integer> next) {
+	public void setNext(List<Work> next) {
 		this.next=next;
 	}
 	
-	public List<Integer> getPrevious() {
+	public List<Work> getPrevious() {
 		return previous;
 	}
 
-	public void setPrevious(List<Integer> previous) {
+	public void setPrevious(List<Work> previous) {
 		this.previous=previous;
 		
 	}

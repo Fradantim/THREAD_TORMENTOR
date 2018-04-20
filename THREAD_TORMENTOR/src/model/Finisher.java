@@ -1,12 +1,13 @@
 package model;
 
 import java.util.List;
+import java.util.Map;
 
 import runner.Entregador;
 
 public class Finisher extends Job implements Work{
 		
-	public int execute() {
+	public int execute(Map<String,String> vars) {
 		Entregador.getInstance().noMoreWorks();
 		return 0;
 	}
@@ -23,19 +24,19 @@ public class Finisher extends Job implements Work{
 		return getClass().getSimpleName()+" "+getId();
 	}
 	
-	public List<Integer> getNext(){
+	public List<Work> getNext(){
 		return next;
 	}
 	
-	public void setNext(List<Integer> next) {
+	public void setNext(List<Work> next) {
 		this.next=next;
 	}
 
-	public List<Integer> getPrevious() {
+	public List<Work> getPrevious() {
 		return previous;
 	}
 
-	public void setPrevious(List<Integer> previous) {
+	public void setPrevious(List<Work> previous) {
 		this.previous=previous;
 		
 	}

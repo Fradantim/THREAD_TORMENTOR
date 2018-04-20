@@ -12,15 +12,16 @@ public class doc1gen extends Job implements Work{
 	private static final String KEY_OPS_FINAL_FILE = "OPS_FILE";
 	private static final String KEY_HIP_FILE = "HIP";
 	
-	private String EXEC = "---";
+	private String hip;
+	private String OpsFile;
 	
-	public doc1gen (Map<String,String> vars , String HIP, String OpsFile){
-		this.vars = vars;
-		this.vars.put(KEY_OPS_TEMPLATE_FILE, OpsFile);
-		this.vars.put(KEY_HIP_FILE, HIP);
+	private String EXEC = "---";
+
+	public doc1gen() {
+		
 	}
 	
-	public int execute() {
+	public int execute(Map<String,String> vars) {
 		Properties prop = new Properties();
 		
 		try {
@@ -72,25 +73,43 @@ public class doc1gen extends Job implements Work{
 		return getClass().getSimpleName()+" "+ getId() +" ("+vars.get(KEY_OPS_TEMPLATE_FILE)+")";
 	}
 
-	public List<Integer> getNext(){
+	public List<Work> getNext(){
 		return next;
 	}
 	
-	public void setNext(List<Integer> next) {
+	public void setNext(List<Work> next) {
 		this.next=next;
 	}
 	
-	public List<Integer> getPrevious() {
+	public List<Work> getPrevious() {
 		return previous;
 	}
 
-	public void setPrevious(List<Integer> previous) {
+	public void setPrevious(List<Work> previous) {
 		this.previous=previous;
 		
 	}
 
 	public void setVars(Map<String,String> vars) {
 		this.vars = vars;
+	}
+
+	public String getHip() {
+		return hip;
+	}
+
+	public void setHip(String hip) {
+		this.vars.put(KEY_HIP_FILE, hip);
+		this.hip = hip;
+	}
+
+	public String getOpsFile() {
+		return OpsFile;
+	}
+
+	public void setOpsFile(String opsFile) {
+		this.vars.put(KEY_OPS_TEMPLATE_FILE, OpsFile);
+		OpsFile = opsFile;
 	}
 
 }
