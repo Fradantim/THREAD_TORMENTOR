@@ -13,7 +13,7 @@ public class doc1gen extends Job implements Work{
 	private static final String KEY_HIP_FILE = "HIP";
 	
 	private String hip;
-	private String OpsFile;
+	private String opsFile;
 	
 	private String EXEC = "---";
 
@@ -81,15 +81,6 @@ public class doc1gen extends Job implements Work{
 		this.next=next;
 	}
 	
-	public List<Work> getPrevious() {
-		return previous;
-	}
-
-	public void setPrevious(List<Work> previous) {
-		this.previous=previous;
-		
-	}
-
 	public void setVars(Map<String,String> vars) {
 		this.vars = vars;
 	}
@@ -104,12 +95,12 @@ public class doc1gen extends Job implements Work{
 	}
 
 	public String getOpsFile() {
-		return OpsFile;
+		return opsFile;
 	}
 
 	public void setOpsFile(String opsFile) {
-		this.vars.put(KEY_OPS_TEMPLATE_FILE, OpsFile);
-		OpsFile = opsFile;
+		this.vars.put(KEY_OPS_TEMPLATE_FILE, opsFile);
+		this.opsFile = opsFile;
 	}
 
 }

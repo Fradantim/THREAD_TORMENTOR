@@ -8,6 +8,25 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	
 
 	
+<!-- 	<bean id="Job_1" class="model.Doc1gen">
+		<property name="hip" value="$DOC1_GEN_SRC$/AMDOCS_T3_CICLICA.hip" />
+		<property name="opsFile" value="$DOC1_GEN_SRC$/config_doc1gen_N.ops" />
+		<property name="him">
+			<list>
+	        	 <value></value>
+	        	 <value></value>
+	        </list>
+        </property>
+		<property name="next">
+			<list>
+	        	 <ref bean ="Job_FIN"/>
+	        </list>
+        </property>
+        <property name="previous"> 
+			<list/>
+		</property>
+	</bean> -->
+	
 	<bean id="Job_1" class="model.Sleeper">
 		<property name="time" value="2" />
 		<property name="next">
@@ -15,9 +34,6 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	        	 <ref bean ="Job_2"/>
 	        </list>
         </property>
-        <property name="previous"> 
-			<list/>
-		</property>
 	</bean>
 	
 	<bean id="Job_2" class="model.Sleeper">
@@ -27,21 +43,11 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 				<ref bean ="Job_FIN"/>
 			</list>
 		</property>
-		<property name="previous">
-			<list>
-	        	 <ref bean ="Job_1"/>
-	        </list>
-        </property>
 	</bean>
 
 	<bean id="Job_FIN" class="model.Finisher">
 		<property name="next"> 
 			<list/>
 		</property>
-		<property name="previous">
-			<list>
-	        	 <ref bean ="Job_2"/>
-	        </list>
-        </property>
 	</bean>
 </beans>

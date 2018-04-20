@@ -19,11 +19,11 @@ public abstract class Job {
 	protected static final int STATUS_CONFIG_GEN_ERROR=3;
 	protected Map<String,String> vars;
 	
+	protected List<Work> next;
+	
 	private static int numerador;
 	protected int id;
 	protected String type;
-	protected List<Work> next;
-	protected List<Work> previous;
 	
 	public Job () {
 		id=++numerador;

@@ -10,9 +10,7 @@ public interface Work {
 	public int getId();
 	
 	public List<Work> getNext();
-	public List<Work> getPrevious();
 	public void setNext(List<Work> next);
-	public void setPrevious(List<Work> previous);
 	
 	public void setId(int id);
 }

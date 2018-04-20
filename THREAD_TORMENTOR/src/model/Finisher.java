@@ -31,13 +31,4 @@ public class Finisher extends Job implements Work{
 	public void setNext(List<Work> next) {
 		this.next=next;
 	}
-
-	public List<Work> getPrevious() {
-		return previous;
-	}
-
-	public void setPrevious(List<Work> previous) {
-		this.previous=previous;
-		
-	}
 }

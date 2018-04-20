@@ -1,27 +1,19 @@
 package runner;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import model.Echoer;
-import model.Finisher;
+
 import model.Sleeper;
 import model.Work;
-import model.doc1gen;
+
 
 public class Entregador {
 	
@@ -110,7 +102,7 @@ public class Entregador {
 		if(newWork==null) {
 			return;
 		}
-		for(Work previousWork: newWork.getPrevious()) {
+		for(Work previousWork: findPrevious(newWork)) {
 			if(!terminados.contains(previousWork.getId())) {
 				return;
 			}
@@ -132,7 +124,7 @@ public class Entregador {
 		allJobs=works;
 		
 		setSleeperTime(sleeperTime);
-		addLaburo(allJobs.get(0));
+		addLaburos(findStarters());
 				
 		boolean hilosCorriendo= true;
 		
@@ -166,4 +158,23 @@ public class Entregador {
 		return returnStatus;
 	}
 	
+	private List<Work> findPrevious(Work work){
+		ArrayList<Work> previousWorks = new ArrayList<>();
+		for(Work innerWork : allJobs) {
+			if (innerWork.getNext().contains(work)) {
+				previousWorks.add(innerWork);
+			}
+		}
+		return previousWorks;
+	}
+	
+	private List<Work> findStarters(){
+		ArrayList<Work> starterWorks = new ArrayList<>();
+		for(Work innerWork : allJobs) {
+			if (findPrevious(innerWork).size()==0) {
+				starterWorks.add(innerWork);
+			}
+		}
+		return starterWorks;
+	}
 }
