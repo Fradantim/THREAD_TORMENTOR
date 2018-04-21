@@ -29,11 +29,12 @@ public abstract class Job {
 		id=++numerador;
 	}
 	
-	protected String interpolate(String str, Map<String,String> vars) {
-		for(String var: vars.keySet()) {
+	protected String interpolate(String str, Map<String,String> inputVars) {
+		for(String var: inputVars.keySet()) {
 			while(str.contains("$"+var+"$")) {
 					str=str.replaceFirst(Pattern.quote("$"+var+"$"), "%s");
-					str= String.format(str, vars.get(var));
+					str= String.format(str, inputVars.get(var));
+					str= interpolate(str,inputVars);
 			}
 		}
 		return str;
@@ -44,13 +45,13 @@ public abstract class Job {
 		return new File(inputFile).getName().replaceFirst("[.][^.]+$", "");
 	}
 	
-	protected void createConfigFile(String inputTemplateFile, String outputFile, Map<String,String> vars) throws IOException {
+	protected void createConfigFile(String inputTemplateFile, String outputFile, Map<String,String> inputVars) throws IOException {
         BufferedReader inputReader = new BufferedReader(new FileReader(new File(inputTemplateFile)));
         BufferedWriter outputWriter = new BufferedWriter(new FileWriter(outputFile));
         
         String readLine = "";
         while ((readLine = inputReader.readLine()) != null) {
-        	outputWriter.write(interpolate(readLine+"\r\n", vars));
+        	outputWriter.write(interpolate(readLine+"\r\n", inputVars));
         }
         
         inputReader.close();
@@ -58,9 +59,9 @@ public abstract class Job {
 	}
 	
 	protected Map<String,String> reInterpolate(Map<String,String> inputMap){
-		Map<String,String> outputMap = new HashMap<>();
-		for(String key: inputMap.keySet()) {
-			outputMap.put(key, interpolate(inputMap.get(key),inputMap));
+		Map<String,String> outputMap = new HashMap<>(inputMap);
+		for(String key: outputMap.keySet()) {
+			outputMap.replace(key, interpolate(outputMap.get(key),outputMap));
 		}
 		return outputMap;
 	}
@@ -107,4 +108,15 @@ public abstract class Job {
 		this.workingPath = workingPath;
 	}
 
+	protected boolean existFile(String file) {
+		File f = new File(file);
+		if(f.exists() && !f.isDirectory()) { 
+		    return true;
+		}
+		return false;
+	}
+	
+	protected void say(String str) {
+		System.out.println(str);
+	}
 }

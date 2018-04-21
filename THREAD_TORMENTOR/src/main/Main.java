@@ -51,22 +51,24 @@ public class Main {
 			vars.put(key, prop.getProperty(key));
 		}
 
-		/* UBICAME BIEN*/
-		vars.put("NEGOCIO", "movil");
-		vars.put("LOTE_ID", "ML");
-		
-		int canthilos = Integer.parseInt(vars.get("canthilos"));
-		int tpoEsperaEntreChusmeos= Integer.parseInt(vars.get("tpoEsperaEntreChusmeos"));
-		int sleeperTime = Integer.parseInt(vars.get("sleeperTime"));
+		int canthilos = Integer.parseInt(vars.get("IN_CANTIDAD_HILOS"));
+		int tpoEsperaEntreChusmeos= Integer.parseInt(vars.get("IN_TPO_ESPERA_ENTRE_CHUSMEOS"));
+		int sleeperTime = Integer.parseInt(vars.get("IN_SLEEPER_TIME"));
 		
 		
 		//JARPATH new File(MyClass.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
 		String inputLoteContextFile="context15.xml";
 		
 		ApplicationContext inputLoteContext = new FileSystemXmlApplicationContext(inputLoteContextFile);
+		
+		
+		Map<String, String> stringMap = inputLoteContext.getBeansOfType(String.class);
+		for(String key : stringMap.keySet()) {
+			vars.put(key, stringMap.get(key));
+		}
+		
 		Map<String, Work> worksMap = inputLoteContext.getBeansOfType(Work.class);
 		ArrayList<Work> works = new ArrayList<>();
-		
 		for(String key : worksMap.keySet()) {
 			works.add(worksMap.get(key));
 		}
@@ -84,7 +86,6 @@ public class Main {
 			e1.printStackTrace();
 		}
 		
-		System.out.println("Subhilos terminaron de correr, sigo con otras operaciones.");
 		System.out.println("FINMAIN");
 		((ConfigurableApplicationContext)inputLoteContext).close();
 		System.exit(result);

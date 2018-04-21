@@ -16,9 +16,38 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     	<constructor-arg value="ML" />
 	</bean>
 	
+	
+	<bean id="Job_Start" class="model.Sleeper">
+		<property name="time" value="3" />
+		<property name="next"> 
+			<list>
+	        	 <ref bean ="Job_1"/>
+	        	 <ref bean ="Job_2"/>
+	        </list>
+		</property>
+	</bean>
+	
 	<bean id="Job_1" class="model.Doc1gen">
 		<property name="hip" value="$DOC1_GEN_SRC$/AMDOCS_T3_CICLICA.hip" />
 		<property name="opsFile" value="$DOC1_GEN_SRC$/config_doc1gen_N.ops" />
+		<property name="tmpWorkingPath" value="$DOC1_GEN_TMP$" />
+		<property name="him">
+			<list>
+	        	 <value>$DOC1_GEN_HIM$/AMD_$CICLO$_$PERIODO$.him</value>
+	        	 <value>$DOC1_GEN_HIM$/AMD_NN_$PERIODO$.him</value>
+	        </list>
+        </property>
+		<property name="next">
+			<list>
+	        	 <ref bean ="Job_FIN"/>
+	        </list>
+        </property>
+	</bean>
+	
+	<bean id="Job_2" class="model.Doc1gen">
+		<property name="hip" value="$DOC1_GEN_SRC$/AMDOCS_T3_CICLICA.hip" />
+		<property name="opsFile" value="$DOC1_GEN_SRC$/config_doc1gen_S.ops" />
+		<property name="tmpWorkingPath" value="$DOC1_GEN_TMP$" />
 		<property name="him">
 			<list>
 	        	 <value>$DOC1_GEN_HIM$/AMD_$CICLO$_$PERIODO$.him</value>

@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface Work {
 	
-	public int execute(Map<String,String> vars);
+	public int execute(Map<String,String> vars) throws Exception;
 	
 	public int getId();
 	

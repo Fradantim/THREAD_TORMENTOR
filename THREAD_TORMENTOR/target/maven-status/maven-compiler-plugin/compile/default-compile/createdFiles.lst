@@ -1,0 +1,15 @@
+runner\Laburador.class
+model\Echoer.class
+model\Finisher.class
+test\ReadXMLFile.class
+test\TestSpring.class
+test\CMD.class
+main\Main.class
+model\Doc1gen.class
+exception\Doc1GenHimInexistenteException.class
+model\SagentETL.class
+model\Work.class
+model\Sleeper.class
+model\Job.class
+test\StringInterpolationTest.class
+runner\Entregador.class

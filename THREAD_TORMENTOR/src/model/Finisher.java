@@ -8,7 +8,7 @@ import runner.Entregador;
 public class Finisher extends Job implements Work{
 		
 	public int execute(Map<String,String> vars) {
-		Entregador.getInstance().noMoreWorks();
+		Entregador.getInstance().setNoMoreWorks();
 		return 0;
 	}
 	

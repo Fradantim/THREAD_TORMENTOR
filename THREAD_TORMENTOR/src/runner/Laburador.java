@@ -39,7 +39,7 @@ public class Laburador implements Runnable{
 				}
 				result = laburo.execute(vars);
 			}catch (Exception e ) {
-				say("ERROR EXCEPTION"+laburo.toString());
+				say("ERROR EXCEPTION! "+laburo.toString());
 				e.printStackTrace();
 				status=STATUS_FINALIZADO_ERROR;
 				entregador.halt();
@@ -51,15 +51,12 @@ public class Laburador implements Runnable{
 				entregador.halt();
 				return;
 			} 
-			if(laburo.getId()!=0) {
-				entregador.addTerminado(laburo.getId());
-				if(laburo.getNext()!=null && laburo.getNext().size()>0) {
-					entregador.recoverJobs(laburo.getNext());
-				}
-				say("END "+laburo.toString());
-			} else {
-				say("END INDUCED "+laburo.toString());
+			entregador.addTerminado(laburo.getId());
+			if(laburo.getNext()!=null && laburo.getNext().size()>0) {
+				entregador.recoverJobs(laburo.getNext());
 			}
+			say("END "+laburo.toString());
+
 			laburo= entregador.getLaburo();
 		}
 		status=STATUS_FINALIZADO_OK;

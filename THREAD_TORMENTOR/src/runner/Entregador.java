@@ -54,7 +54,7 @@ public class Entregador {
 		
 	}
 
-	public void noMoreWorks() {
+	public void setNoMoreWorks() {
 		noMoreWorks=true;
 	}
 	
@@ -83,7 +83,7 @@ public class Entregador {
 
 	public void halt() {
 		returnStatus=STATUS_WORK_ERROR;
-		noMoreWorks();
+		setNoMoreWorks();
 	}
 	
 	public synchronized void recoverJobs(List<Work> works) {
@@ -155,6 +155,7 @@ public class Entregador {
 				}
 			}
 		}
+		System.out.println("[D]: Subhilos terminaron de correr, sigo con otras operaciones.");
 		return returnStatus;
 	}
 	
