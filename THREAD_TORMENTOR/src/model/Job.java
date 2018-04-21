@@ -119,4 +119,12 @@ public abstract class Job {
 	protected void say(String str) {
 		System.out.println(str);
 	}
+	
+	public List<Work> getNext(){
+		return next;
+	}
+	
+	public void setNext(List<Work> next) {
+		this.next=next;
+	}
 }

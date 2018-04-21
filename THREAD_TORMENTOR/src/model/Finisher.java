@@ -1,6 +1,5 @@
 package model;
 
-import java.util.List;
 import java.util.Map;
 
 import runner.Entregador;
@@ -22,13 +21,5 @@ public class Finisher extends Job implements Work{
 	
 	public String toString() {
 		return getClass().getSimpleName()+" "+getId();
-	}
-	
-	public List<Work> getNext(){
-		return next;
-	}
-	
-	public void setNext(List<Work> next) {
-		this.next=next;
 	}
 }

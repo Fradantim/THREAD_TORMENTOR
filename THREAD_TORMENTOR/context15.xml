@@ -17,19 +17,61 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	</bean>
 	
 	
-	<bean id="Job_Start" class="model.Sleeper">
-		<property name="time" value="3" />
+	<bean id="Job_Start" class="model.PlaceboJob">
 		<property name="next"> 
 			<list>
-	        	 <ref bean ="Job_1"/>
-	        	 <ref bean ="Job_2"/>
+	        	 <ref bean ="Job_ETL_PIEZA_INICIO"/>
 	        </list>
 		</property>
 	</bean>
 	
-	<bean id="Job_1" class="model.Doc1gen">
+	<bean id="Job_ETL_PIEZA_INICIO" class="model.SagentETL">
+		<property name="plnConfigTemplateFile" value="$DOC1_ETL_SRC$/00-TMA_FILTRO_CLIENTES_SIN_COMP.conf" />
+		<property name="tmpWorkingPath" value="$DOC1_ETL_TMP$" />
+		<property name="next">
+			<list>
+	        	 <ref bean ="Job_ETL_PIEZA_DESPACHADOR_PARALELO"/>
+	        </list>
+        </property>
+	</bean>
+	
+	<bean id="Job_ETL_PIEZA_DESPACHADOR_PARALELO" class="model.SagentETLParallelDispatcher">
+		<property name="tmpWorkingPath" value="$DOC1_ETL_TMP$" />
+		<property name="next">
+			<list>
+	        	 <ref bean ="Job_ETL_PIEZA_FIN"/>
+	        </list>
+        </property>
+		<property name="plnConfigTemplateFiles">
+			<list>
+	        	<value>$DOC1_ETL_SRC$/10-ENCAB-RESCTA-DATCLIE.conf</value>
+	        	<value>$DOC1_ETL_SRC$/11-ENCAB-CLIENTE.conf</value>
+	        	<!--  <value>$DOC1_ETL_SRC$/15-TMA_SECOM.conf</value>
+	        	<value>$DOC1_ETL_SRC$/30-DETALLE-RESUMEN-CUENTA.conf</value>
+	        	<value>$DOC1_ETL_SRC$/40-COMPROBANTES.conf</value>
+	        	<value>$DOC1_ETL_SRC$/60-TMA_DETALLE-LLAMADAS.conf</value>
+	        	<value>$DOC1_ETL_SRC$/70-MARKETING.conf</value>
+	        	<value>$DOC1_ETL_SRC$/90-TMA_JUNTAR-PIEZA.conf</value> --> 
+	        </list>
+        </property>
+	</bean>
+	
+	
+	<bean id="Job_ETL_PIEZA_FIN" class="model.PlaceboJob">
+		<property name="next"> 
+			<list>
+	        	 <ref bean ="Job_Doc1gen_IMPRENTA"/>
+	        	 <ref bean ="Job_Doc1gen_E2Vault"/>
+	        </list>
+		</property>
+	</bean>
+	
+	
+	
+	
+	<bean id="Job_Doc1gen_IMPRENTA" class="model.Doc1gen">
 		<property name="hip" value="$DOC1_GEN_SRC$/AMDOCS_T3_CICLICA.hip" />
-		<property name="opsFile" value="$DOC1_GEN_SRC$/config_doc1gen_N.ops" />
+		<property name="opsTemplateFile" value="$DOC1_GEN_SRC$/config_doc1gen_N.ops" />
 		<property name="tmpWorkingPath" value="$DOC1_GEN_TMP$" />
 		<property name="him">
 			<list>
@@ -44,9 +86,9 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
         </property>
 	</bean>
 	
-	<bean id="Job_2" class="model.Doc1gen">
+	<bean id="Job_Doc1gen_E2Vault" class="model.Doc1gen">
 		<property name="hip" value="$DOC1_GEN_SRC$/AMDOCS_T3_CICLICA.hip" />
-		<property name="opsFile" value="$DOC1_GEN_SRC$/config_doc1gen_S.ops" />
+		<property name="opsTemplateFile" value="$DOC1_GEN_SRC$/config_doc1gen_S.ops" />
 		<property name="tmpWorkingPath" value="$DOC1_GEN_TMP$" />
 		<property name="him">
 			<list>

@@ -1,6 +1,5 @@
 package model;
 
-import java.util.List;
 import java.util.Map;
 
 public class Echoer extends Job implements Work{
@@ -27,13 +26,4 @@ public class Echoer extends Job implements Work{
 	public String toString() {
 		return getClass().getSimpleName()+" "+ getId() +" ("+str+")";
 	}
-
-	public List<Work> getNext(){
-		return next;
-	}
-	
-	public void setNext(List<Work> next) {
-		this.next=next;
-	}
-
 }

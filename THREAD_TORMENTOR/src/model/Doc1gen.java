@@ -20,21 +20,19 @@ public class Doc1gen extends Job implements Work{
 	private static final String KEY_EXECUTION_COMMAND = "IN_EXEC";
 	
 	private String hip;
-	private String opsFile;
+	private String opsTemplateFile;
 	private String tmpWorkingPath;
 	
 	private List<String> hims;	
 	
 	private String EXEC = "---";
 
-	public Doc1gen() {
-		
-	}
+	public Doc1gen() {	}
 	
 	public int execute(Map<String,String> inputVars) throws Exception {
 		vars= new HashMap<String, String>(inputVars);
 		vars.put(KEY_HIP_FILE, hip);
-		vars.put(KEY_OPS_TEMPLATE_FILE, opsFile);
+		vars.put(KEY_OPS_TEMPLATE_FILE, opsTemplateFile);
 		vars.put(KEY_TMP_WORKING_PATH, tmpWorkingPath);
 		
 		int himIndex=0;
@@ -82,8 +80,6 @@ public class Doc1gen extends Job implements Work{
 					throw new Doc1GenHimInexistenteException("No se encontro en el filesystem ningun him para la ejecucion de doc1gen.");
 				}
 			}
-
-			//vars.replace(KEY_OPS_FINAL_FILE, interpolate(vars.get(KEY_OPS_FINAL_FILE),vars));
 			
 			createConfigFile(vars.get(KEY_OPS_TEMPLATE_FILE),vars.get(KEY_OPS_FINAL_FILE) ,vars);
 		} catch (IOException e1) {
@@ -96,7 +92,7 @@ public class Doc1gen extends Job implements Work{
 				
 		
 		int res=1;
-		String logFile=vars.get("DOC1_SRC_LOG")+"/"+vars.get("MASK")+"_"+getClass().getSimpleName()+"_"+getId()+"_"+removeFilePathAndExtension(vars.get(KEY_OPS_TEMPLATE_FILE))+".log";
+		String logFile=vars.get("DOC1_SRC_LOG")+"/"+vars.get("MASK")+"_"+getClass().getSimpleName()+"_"+removeFilePathAndExtension(vars.get(KEY_OPS_TEMPLATE_FILE))+".log";
 		try {
 			res=execCMD(EXEC, logFile);
 		} catch (Exception e) {
@@ -115,15 +111,7 @@ public class Doc1gen extends Job implements Work{
 	}
 	
 	public String toString() {
-		return getClass().getSimpleName()+" "+ getId() +" ("+opsFile+")";
-	}
-
-	public List<Work> getNext(){
-		return next;
-	}
-	
-	public void setNext(List<Work> next) {
-		this.next=next;
+		return getClass().getSimpleName()+" "+ getId() +" ("+opsTemplateFile+")";
 	}
 	
 	public void setVars(Map<String,String> vars) {
@@ -138,12 +126,12 @@ public class Doc1gen extends Job implements Work{
 		this.hip = hip;
 	}
 
-	public String getOpsFile() {
-		return opsFile;
+	public String getOpsTemplateFile() {
+		return opsTemplateFile;
 	}
 
-	public void setOpsFile(String opsFile) {
-		this.opsFile = opsFile;
+	public void setOpsTemplateFile(String opsTemplateFile) {
+		this.opsTemplateFile = opsTemplateFile;
 	}
 
 	public List<String> getHim() {

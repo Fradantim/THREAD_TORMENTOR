@@ -8,19 +8,25 @@ import java.util.Properties;
 
 public class SagentETL extends Job implements Work{
 
-	private String inputFileName;
-	private Map<String,String> vars;
+	private static final String KEY_PLN_CONF_TEMPLATE_FILE = "plnConfTemplateFile";
+	private static final String KEY_PLN_CONF_FINAL_FILE = "IN_CONF_FILE";
+	private static final String KEY_TMP_WORKING_PATH = "tmpWorkingPath";
+	private static final String KEY_EXECUTION_COMMAND = "IN_EXEC";
 	
-	public SagentETL (String inputFileName){
-		this.inputFileName=inputFileName;
-	}
+	private String plnConfigTemplateFile;
+	private String tmpWorkingPath;
+	
+	public SagentETL (){	}
 	
 	public int execute(Map<String,String> vars) {
-		//TOTO TERMINAR!!!!!!!!
+		vars.put(KEY_PLN_CONF_TEMPLATE_FILE, plnConfigTemplateFile);
+		vars.put(KEY_TMP_WORKING_PATH, tmpWorkingPath);
+		
+		
 		Properties prop = new Properties();
 		
 		try {
-			prop.load(new FileInputStream("master.properties"));
+			prop.load(new FileInputStream("sagentETL.properties"));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return STATUS_PROP_ERROR;
@@ -33,19 +39,20 @@ public class SagentETL extends Job implements Work{
 		
 		
 		
-		String SAGENT_EXEC = prop.getProperty("EXEC");
-				
-		Runtime rt = Runtime.getRuntime();
-		Process pr;
+		vars.put(KEY_PLN_CONF_FINAL_FILE, vars.get(KEY_TMP_WORKING_PATH)+"/"+vars.get("MASK")+"_"+removeFilePathAndExtension(vars.get(KEY_PLN_CONF_TEMPLATE_FILE))+".conf");
+		vars=reInterpolate(vars);
+		String EXEC = prop.getProperty(KEY_EXECUTION_COMMAND);
+		EXEC = interpolate(EXEC, vars);
 		int res=1;
 		try {
-			pr = rt.exec("");
-			res=pr.exitValue();
-		} catch (IOException e) {
+			String logFile=vars.get("DOC1_SRC_LOG")+"/"+vars.get("MASK")+"_"+getClass().getSimpleName()+"_"+removeFilePathAndExtension(vars.get(KEY_PLN_CONF_TEMPLATE_FILE))+".log";
+			createConfigFile(vars.get(KEY_PLN_CONF_TEMPLATE_FILE),vars.get(KEY_PLN_CONF_FINAL_FILE) ,vars);
+			res=execCMD(EXEC, logFile);
+		} catch (Exception e) {
 			e.printStackTrace();
 			return STATUS_CMD_ERROR;
-		}
-		
+		} 
+	
 		return res;
 	}
 	
@@ -58,7 +65,7 @@ public class SagentETL extends Job implements Work{
 	}
 	
 	public String toString() {
-		return getClass().getSimpleName()+" "+ getId() +" ("+inputFileName+")";
+		return getClass().getSimpleName()+" "+ getId() +" ("+plnConfigTemplateFile+")";
 	}
 
 	public List<Work> getNext(){
@@ -75,6 +82,22 @@ public class SagentETL extends Job implements Work{
 
 	public void setVars(Map<String,String> vars) {
 		this.vars = vars;
+	}
+
+	public String getPlnConfigTemplateFile() {
+		return plnConfigTemplateFile;
+	}
+
+	public void setPlnConfigTemplateFile(String plnConfigTemplateFile) {
+		this.plnConfigTemplateFile = plnConfigTemplateFile;
+	}
+
+	public String getTmpWorkingPath() {
+		return tmpWorkingPath;
+	}
+
+	public void setTmpWorkingPath(String tmpWorkingPath) {
+		this.tmpWorkingPath = tmpWorkingPath;
 	}
 
 }

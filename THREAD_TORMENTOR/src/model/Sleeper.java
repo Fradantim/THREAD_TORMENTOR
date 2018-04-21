@@ -45,12 +45,4 @@ public class Sleeper extends Job implements Work{
 	public String toString() {
 		return getClass().getSimpleName()+" "+id +" ("+getTime()+"s)";
 	}
-	
-	public List<Work> getNext(){
-		return next;
-	}
-	
-	public void setNext(List<Work> next) {
-		this.next=next;
-	}
 }

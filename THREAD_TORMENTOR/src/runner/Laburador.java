@@ -32,11 +32,7 @@ public class Laburador implements Runnable{
 		while (laburo!=null) {			
 			int result = 1;
 			try {
-				if(laburo.getId()!=0) {
-					say("START "+laburo.toString());
-				}else {
-					say("START INDUCED "+laburo.toString());
-				}
+				say("START "+laburo.toString());
 				result = laburo.execute(vars);
 			}catch (Exception e ) {
 				say("ERROR EXCEPTION! "+laburo.toString());
