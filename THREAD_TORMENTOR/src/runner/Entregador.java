@@ -44,12 +44,16 @@ public class Entregador {
 	private int sleeperTime;
 	
 	private boolean noMoreWorks=false;
+
+	public synchronized void addJobs(List <Work> nuevosLaburos) {
+		allJobs.addAll(nuevosLaburos);
+	}
 	
-	public synchronized void addLaburos(List <Work> nuevosLaburos) {
+	private synchronized void addLaburos(List <Work> nuevosLaburos) {
 		laburos.addAll(nuevosLaburos);
 	}
 	
-	public synchronized void addLaburo(Work nuevosLaburo) {
+	private synchronized void addLaburo(Work nuevosLaburo) {
 		laburos.add(nuevosLaburo);
 		
 	}

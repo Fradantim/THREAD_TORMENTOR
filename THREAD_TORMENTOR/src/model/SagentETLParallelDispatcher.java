@@ -27,7 +27,8 @@ public class SagentETLParallelDispatcher extends Job implements Work{
 		}
 		
 		setNext(newWorkers);
-		Entregador.getInstance().addLaburos(newWorkers);
+		Entregador.getInstance().addJobs(newWorkers);
+		//Entregador.getInstance().addLaburos(newWorkers);
 		return 0;
 	}
 	

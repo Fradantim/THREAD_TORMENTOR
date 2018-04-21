@@ -46,12 +46,12 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 			<list>
 	        	<value>$DOC1_ETL_SRC$/10-ENCAB-RESCTA-DATCLIE.conf</value>
 	        	<value>$DOC1_ETL_SRC$/11-ENCAB-CLIENTE.conf</value>
-	        	<!--  <value>$DOC1_ETL_SRC$/15-TMA_SECOM.conf</value>
+	        	<value>$DOC1_ETL_SRC$/15-TMA_SECOM.conf</value>
 	        	<value>$DOC1_ETL_SRC$/30-DETALLE-RESUMEN-CUENTA.conf</value>
 	        	<value>$DOC1_ETL_SRC$/40-COMPROBANTES.conf</value>
 	        	<value>$DOC1_ETL_SRC$/60-TMA_DETALLE-LLAMADAS.conf</value>
 	        	<value>$DOC1_ETL_SRC$/70-MARKETING.conf</value>
-	        	<value>$DOC1_ETL_SRC$/90-TMA_JUNTAR-PIEZA.conf</value> --> 
+	        	<value>$DOC1_ETL_SRC$/90-TMA_JUNTAR-PIEZA.conf</value> 
 	        </list>
         </property>
 	</bean>
