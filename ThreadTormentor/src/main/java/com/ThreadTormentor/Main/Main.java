@@ -40,7 +40,7 @@ public class Main {
 		}
 		
 		
-		Map<String,String> vars = new HashMap<>();
+		Map<String,String> vars = new HashMap<String,String>();
 		for(Object obj: prop.keySet()) {
 			String key = new String((String)obj);
 			vars.put(key, prop.getProperty(key));
@@ -76,7 +76,7 @@ public class Main {
 		}
 		
 		Map<String, Work> worksMap = inputLoteContext.getBeansOfType(Work.class);
-		ArrayList<Work> works = new ArrayList<>();
+		ArrayList<Work> works = new ArrayList<Work>();
 		for(String key : worksMap.keySet()) {
 			works.add(worksMap.get(key));
 		}

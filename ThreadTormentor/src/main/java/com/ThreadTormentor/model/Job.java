@@ -59,7 +59,7 @@ public abstract class Job {
 	}
 	
 	protected Map<String,String> reInterpolate(Map<String,String> inputMap){
-		Map<String,String> outputMap = new HashMap<>(inputMap);
+		Map<String,String> outputMap = new HashMap<String,String>(inputMap);
 		for(String key: outputMap.keySet()) {
 			outputMap.replace(key, interpolate(outputMap.get(key),outputMap));
 		}

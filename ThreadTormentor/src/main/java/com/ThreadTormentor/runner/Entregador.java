@@ -32,9 +32,9 @@ public class Entregador {
 	}
 
 	private void ready() {
-		laburos= new ArrayList<>();
-		allJobs= new ArrayList<>();
-		terminados= new ArrayList<>();
+		laburos= new ArrayList<Work>();
+		allJobs= new ArrayList<Work>();
+		terminados= new ArrayList<Integer>();
 	}
 	
 	private List <Work> laburos;
@@ -132,7 +132,7 @@ public class Entregador {
 				
 		boolean hilosCorriendo= true;
 		
-		ArrayList<Laburador> laburadores = new ArrayList<>();
+		ArrayList<Laburador> laburadores = new ArrayList<Laburador>();
 		
 		for(int i=0; i< canthilos; i++) {
 			laburadores.add(new Laburador(vars));
@@ -164,7 +164,7 @@ public class Entregador {
 	}
 	
 	private List<Work> findPrevious(Work work){
-		ArrayList<Work> previousWorks = new ArrayList<>();
+		ArrayList<Work> previousWorks = new ArrayList<Work>();
 		for(Work innerWork : allJobs) {
 			if (innerWork.getNext().contains(work)) {
 				previousWorks.add(innerWork);
@@ -174,7 +174,7 @@ public class Entregador {
 	}
 	
 	private List<Work> findStarters(){
-		ArrayList<Work> starterWorks = new ArrayList<>();
+		ArrayList<Work> starterWorks = new ArrayList<Work>();
 		for(Work innerWork : allJobs) {
 			if (findPrevious(innerWork).size()==0) {
 				starterWorks.add(innerWork);
