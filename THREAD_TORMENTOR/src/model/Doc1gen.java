@@ -17,7 +17,8 @@ public class Doc1gen extends Job implements Work{
 	private static final String KEY_TMP_WORKING_PATH = "tmpWorkingPath";
 	private static final String KEY_HIM_PREFIX = "HIM_";
 	private static final String KEY_HIM_CHOSEN_FILE = "IN_CHOSEN_HIM_FILE";
-	private static final String KEY_EXECUTION_COMMAND = "IN_EXEC";
+	private static final String KEY_EXECUTION_COMMAND = "IN_DOC1GEN_EXEC";
+	private static final String KEY_LOG_PATH = "IN_LOG";
 	
 	private String hip;
 	private String opsTemplateFile;
@@ -92,7 +93,7 @@ public class Doc1gen extends Job implements Work{
 				
 		
 		int res=1;
-		String logFile=vars.get("DOC1_SRC_LOG")+"/"+vars.get("MASK")+"_"+getClass().getSimpleName()+"_"+removeFilePathAndExtension(vars.get(KEY_OPS_TEMPLATE_FILE))+".log";
+		String logFile=vars.get(KEY_LOG_PATH)+"/"+vars.get("MASK")+"_"+getClass().getSimpleName()+"_"+removeFilePathAndExtension(vars.get(KEY_OPS_TEMPLATE_FILE))+".log";
 		try {
 			res=execCMD(EXEC, logFile);
 		} catch (Exception e) {

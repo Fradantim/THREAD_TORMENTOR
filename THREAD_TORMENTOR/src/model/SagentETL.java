@@ -11,7 +11,8 @@ public class SagentETL extends Job implements Work{
 	private static final String KEY_PLN_CONF_TEMPLATE_FILE = "plnConfTemplateFile";
 	private static final String KEY_PLN_CONF_FINAL_FILE = "IN_CONF_FILE";
 	private static final String KEY_TMP_WORKING_PATH = "tmpWorkingPath";
-	private static final String KEY_EXECUTION_COMMAND = "IN_EXEC";
+	private static final String KEY_EXECUTION_COMMAND = "IN_SAGENT_EXEC";
+	private static final String KEY_LOG_PATH = "IN_LOG";
 	
 	private String plnConfigTemplateFile;
 	private String tmpWorkingPath;
@@ -45,7 +46,7 @@ public class SagentETL extends Job implements Work{
 		EXEC = interpolate(EXEC, vars);
 		int res=1;
 		try {
-			String logFile=vars.get("DOC1_SRC_LOG")+"/"+vars.get("MASK")+"_"+getClass().getSimpleName()+"_"+removeFilePathAndExtension(vars.get(KEY_PLN_CONF_TEMPLATE_FILE))+".log";
+			String logFile=vars.get(KEY_LOG_PATH)+"/"+vars.get("MASK")+"_"+getClass().getSimpleName()+"_"+removeFilePathAndExtension(vars.get(KEY_PLN_CONF_TEMPLATE_FILE))+".log";
 			createConfigFile(vars.get(KEY_PLN_CONF_TEMPLATE_FILE),vars.get(KEY_PLN_CONF_FINAL_FILE) ,vars);
 			res=execCMD(EXEC, logFile);
 		} catch (Exception e) {
