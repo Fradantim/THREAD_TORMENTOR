@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+
+	
+	<bean id="NEGOCIO" class="java.lang.String">
+    	<constructor-arg value="movil" />
+	</bean>
+	
+	<bean id="LOTE_ID" class="java.lang.String">
+    	<constructor-arg value="ML" />
+	</bean>
+	
+	
+	<bean id="Job_Start" class="com.ThreadTormentor.model.PlaceboJob">
+		<property name="next"> 
+			<list>
+	        	 <ref bean ="Job_ETL_PIEZA_INICIO"/>
+	        </list>
+		</property>
+	</bean>
+	
+	<bean id="Job_ETL_PIEZA_INICIO" class="com.ThreadTormentor.model.SagentETL">
+		<property name="plnConfigTemplateFile" value="$DOC1_ETL_SRC$/00-TMA_FILTRO_CLIENTES_SIN_COMP.conf" />
+		<property name="tmpWorkingPath" value="$DOC1_ETL_TMP$" />
+		<property name="next">
+			<list>
+	        	 <ref bean ="Job_ETL_PIEZA_DESPACHADOR_PARALELO"/>
+	        </list>
+        </property>
+	</bean>
+	
+	<bean id="Job_ETL_PIEZA_DESPACHADOR_PARALELO" class="com.ThreadTormentor.model.SagentETLParallelDispatcher">
+		<property name="tmpWorkingPath" value="$DOC1_ETL_TMP$" />
+		<property name="next">
+			<list>
+	        	 <ref bean ="Job_ETL_PIEZA_FIN"/>
+	        </list>
+        </property>
+		<property name="plnConfigTemplateFiles">
+			<list>
+	        	<value>$DOC1_ETL_SRC$/10-ENCAB-RESCTA-DATCLIE.conf</value>
+	        	<value>$DOC1_ETL_SRC$/11-ENCAB-CLIENTE.conf</value>
+	        	<value>$DOC1_ETL_SRC$/15-TMA_SECOM.conf</value>
+	        	<value>$DOC1_ETL_SRC$/30-DETALLE-RESUMEN-CUENTA.conf</value>
+	        	<value>$DOC1_ETL_SRC$/40-COMPROBANTES.conf</value>
+	        	<value>$DOC1_ETL_SRC$/60-TMA_DETALLE-LLAMADAS.conf</value>
+	        	<value>$DOC1_ETL_SRC$/70-MARKETING.conf</value>
+	        	<value>$DOC1_ETL_SRC$/90-TMA_JUNTAR-PIEZA.conf</value> 
+	        </list>
+        </property>
+	</bean>
+	
+	
+	<bean id="Job_ETL_PIEZA_FIN" class="com.ThreadTormentor.model.PlaceboJob">
+		<property name="next"> 
+			<list>
+	        	 <ref bean ="Job_Doc1gen_IMPRENTA"/>
+	        	 <ref bean ="Job_Doc1gen_E2Vault"/>
+	        </list>
+		</property>
+	</bean>
+	
+	
+	
+	
+	<bean id="Job_Doc1gen_IMPRENTA" class="com.ThreadTormentor.model.Doc1gen">
+		<property name="hip" value="$DOC1_GEN_SRC$/AMDOCS_T3_CICLICA.hip" />
+		<property name="opsTemplateFile" value="$DOC1_GEN_SRC$/config_doc1gen_N.ops" />
+		<property name="tmpWorkingPath" value="$DOC1_GEN_TMP$" />
+		<property name="him">
+			<list>
+	        	 <value>$DOC1_GEN_HIM$/AMD_$CICLO$_$PERIODO$.him</value>
+	        	 <value>$DOC1_GEN_HIM$/AMD_NN_$PERIODO$.him</value>
+	        </list>
+        </property>
+		<property name="next">
+			<list>
+	        	 <ref bean ="Job_FIN"/>
+	        </list>
+        </property>
+	</bean>
+	
+	<bean id="Job_Doc1gen_E2Vault" class="com.ThreadTormentor.model.Doc1gen">
+		<property name="hip" value="$DOC1_GEN_SRC$/AMDOCS_T3_CICLICA.hip" />
+		<property name="opsTemplateFile" value="$DOC1_GEN_SRC$/config_doc1gen_S.ops" />
+		<property name="tmpWorkingPath" value="$DOC1_GEN_TMP$" />
+		<property name="him">
+			<list>
+	        	 <value>$DOC1_GEN_HIM$/AMD_$CICLO$_$PERIODO$.him</value>
+	        	 <value>$DOC1_GEN_HIM$/AMD_NN_$PERIODO$.him</value>
+	        </list>
+        </property>
+		<property name="next">
+			<list>
+	        	 <ref bean ="Job_FIN"/>
+	        </list>
+        </property>
+	</bean>
+
+	<bean id="Job_FIN" class="com.ThreadTormentor.model.Finisher">
+		<property name="next"> 
+			<list/>
+		</property>
+	</bean>
+</beans>
