@@ -33,7 +33,7 @@ public class SimpleCmdLineJob extends Job implements Work{
 	}
 	
 	public String toString() {
-		return getClass().getSimpleName()+" "+ getId() +" ("+binWithPath+" "+params+")";
+		return getClass().getSimpleName()+" "+ getId() +" ("+binWithPath.replace("/", "_")+"_"+params.replaceAll("/", "_")+")";
 	}
 	
 	public int getId() {

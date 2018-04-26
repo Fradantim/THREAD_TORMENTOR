@@ -102,10 +102,10 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	        	 <ref bean ="Job_FIN"/>
 	        </list>
         </property>
-	</bean>  -->
+	</bean>  
 
 
-	<bean id="Job_Doc1gen_IMPRENTA" class="com.ThreadTormentor.model.SimpleCmdLineJob">
+	<bean id="Job_CONTROL_IMPRENTA_CARILLAS_IMPARES" class="com.ThreadTormentor.model.SimpleCmdLineJob">
 		<property name="binWithPath" value="$PERL_BIN_PATH$/perl" />
 		<property name="params" value="$DOC1_SRC$/impre_doc1_controlCarillasImpares.pl $DOC1_GEN_OUT$/Journal_Distribucion_$MASK$.jrn" />
 		<property name="next">
@@ -113,7 +113,17 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	        	 <ref bean ="Job_FIN"/>
 	        </list>
         </property>
-	</bean>
+	</bean> -->
+	
+	<bean id="Job_Doc1gen_IMPRENTA" class="com.ThreadTormentor.model.SimpleCmdLineJob">
+		<property name="binWithPath" value="$PERL_BIN_PATH$/perl" />
+		<property name="params" value="$DOC1_SRC$/impre_doc1_generaSpool.pl -c $CANTIDAD_HOJAS_SPOOL$ -m $MASK$ -ip $DOC1_DIS_OUT$ -op $DOC1_PCE_IN$" />
+		<property name="next">
+			<list>
+	        	 <ref bean ="Job_FIN"/>
+	        </list>
+        </property>
+	</bean> 
 	
 	<bean id="Job_FIN" class="com.ThreadTormentor.model.Finisher">
 		<property name="next"> 

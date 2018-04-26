@@ -91,6 +91,7 @@ public abstract class Job {
 		if(exitStatus==0) {
 			return 0;
 		} else {
+			say(inputCommand);
 			say("Detalle de error:");
 			say("");
 			say(allLines);
