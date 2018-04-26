@@ -78,14 +78,25 @@ public abstract class Job {
 		Process p = builder.start();
 		BufferedReader buffReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 		String line;
+		String allLines="";
 		outputWriter.write(commandToExecute+"\r\n");
 		while ((line= buffReader.readLine())!=null) {
 			outputWriter.write(line+"\r\n");
+			allLines=allLines+line+"\r\n";
 		}
 		p.destroy();
 		buffReader.close();
 		outputWriter.close();
-		return p.exitValue(); 
+		int exitStatus = p.exitValue();
+		if(exitStatus==0) {
+			return 0;
+		} else {
+			say("Detalle de error:");
+			say("");
+			say(allLines);
+			return p.exitValue();
+		}
+		 
 	}
 	
 	@Override

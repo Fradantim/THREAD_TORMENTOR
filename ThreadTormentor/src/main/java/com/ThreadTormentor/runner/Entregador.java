@@ -68,7 +68,7 @@ public class Entregador {
 		if(laburos.size()>0) {
 			return laburos.remove(0);
 		} else {
-			return new Sleeper(3);
+			return new Sleeper(sleeperTime);
 		}
 		
 	}

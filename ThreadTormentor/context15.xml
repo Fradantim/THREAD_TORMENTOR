@@ -17,7 +17,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	</bean>
 	
 	
-	<bean id="Job_Start" class="com.ThreadTormentor.model.PlaceboJob">
+	<!-- <bean id="Job_Start" class="com.ThreadTormentor.model.PlaceboJob">
 		<property name="next"> 
 			<list>
 	        	 <ref bean ="Job_ETL_PIEZA_INICIO"/>
@@ -51,13 +51,14 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	        	<value>$DOC1_ETL_SRC$/40-COMPROBANTES.conf</value>
 	        	<value>$DOC1_ETL_SRC$/60-TMA_DETALLE-LLAMADAS.conf</value>
 	        	<value>$DOC1_ETL_SRC$/70-MARKETING.conf</value>
-	        	<value>$DOC1_ETL_SRC$/90-TMA_JUNTAR-PIEZA.conf</value> 
 	        </list>
         </property>
 	</bean>
 	
 	
-	<bean id="Job_ETL_PIEZA_FIN" class="com.ThreadTormentor.model.PlaceboJob">
+	<bean id="Job_ETL_PIEZA_FIN" class="com.ThreadTormentor.model.SagentETL">
+		<property name="plnConfigTemplateFile" value="$DOC1_ETL_SRC$/90-TMA_JUNTAR-PIEZA.conf" />
+		<property name="tmpWorkingPath" value="$DOC1_ETL_TMP$" />
 		<property name="next"> 
 			<list>
 	        	 <ref bean ="Job_Doc1gen_IMPRENTA"/>
@@ -101,8 +102,19 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	        	 <ref bean ="Job_FIN"/>
 	        </list>
         </property>
-	</bean>
+	</bean>  -->
 
+
+	<bean id="Job_Doc1gen_IMPRENTA" class="com.ThreadTormentor.model.SimpleCmdLineJob">
+		<property name="binWithPath" value="$PERL_BIN_PATH$/perl" />
+		<property name="params" value="$DOC1_SRC$/impre_doc1_controlCarillasImpares.pl $DOC1_GEN_OUT$/Journal_Distribucion_$MASK$.jrn" />
+		<property name="next">
+			<list>
+	        	 <ref bean ="Job_FIN"/>
+	        </list>
+        </property>
+	</bean>
+	
 	<bean id="Job_FIN" class="com.ThreadTormentor.model.Finisher">
 		<property name="next"> 
 			<list/>
