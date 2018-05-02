@@ -1,7 +1,9 @@
 package com.ThreadTormentor.runner;
 
+import java.util.Date;
 import java.util.Map;
 
+import com.ThreadTormentor.model.Sleeper;
 import com.ThreadTormentor.model.Work;
 
 public class Laburador implements Runnable{
@@ -29,33 +31,49 @@ public class Laburador implements Runnable{
 	public void run() {
 		Work laburo= entregador.getLaburo();
 		say("START THREAD");
+		Date start;
+		Date end;
 		while (laburo!=null) {			
 			int result = 1;
+			start= new Date();
 			try {
-				say("START "+laburo.toString());
+				if(!(laburo instanceof Sleeper)) {
+					say("START "+laburo.toString());
+				}
 				result = laburo.execute(vars);
 			}catch (Exception e ) {
-				say("ERROR EXCEPTION! "+laburo.toString());
+				end= new Date();
+				say("ERROR EXCEPTION! "+laburo.toString()+" "+getTimeDiff(start, end));
 				e.printStackTrace();
 				status=STATUS_FINALIZADO_ERROR;
 				entregador.halt();
 				return;
 			}
 			if(result != 0) {
-				say("ERROR "+laburo.toString()+" err:"+result);
+				end= new Date();
+				say("ERROR "+laburo.toString()+" "+getTimeDiff(start, end)+" err:"+result);
 				status=STATUS_FINALIZADO_ERROR;
 				entregador.halt();
 				return;
 			} 
+			end= new Date();
 			entregador.addTerminado(laburo.getId());
 			if(laburo.getNext()!=null && laburo.getNext().size()>0) {
 				entregador.recoverJobs(laburo.getNext());
 			}
-			say("END "+laburo.toString());
+			if(!(laburo instanceof Sleeper)) {
+				say("END "+laburo.toString()+" "+getTimeDiff(start, end));
+			}
+			
 
 			laburo= entregador.getLaburo();
 		}
 		status=STATUS_FINALIZADO_OK;
+	}
+	
+	private String getTimeDiff(Date start, Date end) {
+		long segs = (end.getTime()-start.getTime())/1000;
+		return String.format("(%03d:%02d:%02d)",segs/3600,segs%3600/60,segs%60);
 	}
 
 	public int getStatus() {

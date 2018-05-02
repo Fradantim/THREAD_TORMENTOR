@@ -55,7 +55,6 @@ public class Entregador {
 	
 	private synchronized void addLaburo(Work nuevosLaburo) {
 		laburos.add(nuevosLaburo);
-		
 	}
 
 	public void setNoMoreWorks() {
@@ -87,6 +86,7 @@ public class Entregador {
 
 	public void halt() {
 		returnStatus=STATUS_WORK_ERROR;
+		say("[D]: Recibido pedido de alto.");
 		setNoMoreWorks();
 	}
 	
@@ -143,12 +143,14 @@ public class Entregador {
 		}
 		
 		while(hilosCorriendo) {
-			System.out.println("[D]: Subhilos corriendo, espero "+tpoEsperaEntreChusmeos+"s y chusmeo de nuevo.");
+			if(noMoreWorks) {
+				say("[D]: Subhilos siquen corriendo, espero "+tpoEsperaEntreChusmeos+"s y chusmeo de nuevo.");
+			}
 			try {
 				TimeUnit.SECONDS.sleep(tpoEsperaEntreChusmeos);
 			} catch (InterruptedException e) {
 				//e.printStackTrace();
-				System.out.println("\"[D]: ERROR. Sleep "+tpoEsperaEntreChusmeos+ "s fallo:"+e.getMessage());
+				say("[D]: ERROR. Sleep "+tpoEsperaEntreChusmeos+ "s fallo:"+e.getMessage());
 				returnStatus=STATUS_SLEEP_ERROR;
 				return returnStatus;
 			}
@@ -159,7 +161,7 @@ public class Entregador {
 				}
 			}
 		}
-		System.out.println("[D]: Subhilos terminaron de correr, sigo con otras operaciones.");
+		System.out.println("[D]: Subhilos terminaron de correr.");
 		return returnStatus;
 	}
 	
@@ -181,5 +183,9 @@ public class Entregador {
 			}
 		}
 		return starterWorks;
+	}
+	
+	private void say(String str) {
+		System.out.println(str);
 	}
 }
