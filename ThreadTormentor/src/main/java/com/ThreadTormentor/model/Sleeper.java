@@ -14,6 +14,9 @@ public class Sleeper extends Job implements Work{
 	public Sleeper() {	}
 	
 	public int execute(Map<String,String> vars) {
+		if(skippable) {
+			return 0;
+		}
 		try {
 			TimeUnit.SECONDS.sleep(time);
 		} catch (InterruptedException e) {

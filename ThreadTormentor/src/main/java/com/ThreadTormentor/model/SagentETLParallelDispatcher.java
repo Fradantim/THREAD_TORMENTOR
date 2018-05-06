@@ -15,19 +15,19 @@ public class SagentETLParallelDispatcher extends Job implements Work{
 	
 	
 	public int execute(Map<String, String> vars) throws Exception {
-		ArrayList<Work> newWorkers = new ArrayList<Work>();
+		ArrayList<Work> newWorks = new ArrayList<Work>();
 		
 		for(String plnConfigTemplateFile : plnConfigTemplateFiles) {
-			SagentETL worker = new SagentETL();
-			worker.setPlnConfigTemplateFile(plnConfigTemplateFile);
-			worker.setTmpWorkingPath(tmpWorkingPath);
-			worker.setNext(getNext());
+			SagentETL newWork = new SagentETL();
+			newWork.setPlnConfigTemplateFile(plnConfigTemplateFile);
+			newWork.setTmpWorkingPath(tmpWorkingPath);
+			newWork.setNext(getNext());
 			
-			newWorkers.add(worker);
+			newWorks.add(newWork);
 		}
 		
-		setNext(newWorkers);
-		Entregador.getInstance().addJobs(newWorkers);
+		setNext(newWorks);
+		Entregador.getInstance().addJobs(newWorks);
 		//Entregador.getInstance().addLaburos(newWorkers);
 		return 0;
 	}

@@ -15,6 +15,9 @@ public class SimpleCmdLineJob extends Job implements Work{
 	public SimpleCmdLineJob() {	}
 	
 	public int execute(Map<String,String> inputVars) throws Exception {
+		if(skippable) {
+			return 0;
+		}
 		vars= new HashMap<String, String>(inputVars);
 		vars.put(KEY_BIN_WITH_PATH, binWithPath);
 		vars.put(KEY_PARAMS, params);

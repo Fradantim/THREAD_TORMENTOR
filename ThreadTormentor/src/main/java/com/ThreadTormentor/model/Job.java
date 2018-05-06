@@ -16,8 +16,9 @@ public abstract class Job {
 	
 	protected static final int STATUS_PROP_ERROR=1;
 	protected static final int STATUS_CMD_ERROR=2;
-	protected static final int STATUS_CONFIG_GEN_ERROR=3;
+	protected static final int STATUS_CONFIG_ERROR=3;
 	protected Map<String,String> vars;
+	protected boolean skippable;
 	
 	protected List<Work> next;
 	
@@ -138,5 +139,13 @@ public abstract class Job {
 	
 	public void setNext(List<Work> next) {
 		this.next=next;
+	}
+
+	public boolean isSkippable() {
+		return skippable;
+	}
+
+	public void setSkippable(boolean skippable) {
+		this.skippable = skippable;
 	}
 }

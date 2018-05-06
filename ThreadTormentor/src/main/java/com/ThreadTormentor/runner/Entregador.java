@@ -42,6 +42,8 @@ public class Entregador {
 	private List <Work> allJobs;
 	private int returnStatus= STATUS_OK;
 	private int sleeperTime;
+	private int skippables=0;
+	private int skipped=0;
 	
 	private boolean noMoreWorks=false;
 
@@ -65,7 +67,12 @@ public class Entregador {
 		if(noMoreWorks)
 			return null;
 		if(laburos.size()>0) {
-			return laburos.remove(0);
+			Work laburoAEntragar= laburos.remove(0);
+			if(skipped<skippables) {
+				laburoAEntragar.setSkippable(true);
+				skipped++;
+			}
+			return laburoAEntragar;
 		} else {
 			return new Sleeper(sleeperTime);
 		}
@@ -128,8 +135,10 @@ public class Entregador {
 		allJobs=works;
 		
 		setSleeperTime(sleeperTime);
+		skippables=Integer.parseInt(vars.get("IN_SKIP"));
+		
 		addLaburos(findStarters());
-				
+		
 		boolean hilosCorriendo= true;
 		
 		ArrayList<Laburador> laburadores = new ArrayList<Laburador>();

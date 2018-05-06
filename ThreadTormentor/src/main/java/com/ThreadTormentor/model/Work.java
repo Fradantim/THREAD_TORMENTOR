@@ -13,4 +13,9 @@ public interface Work {
 	public void setNext(List<Work> next);
 	
 	public void setId(int id);
+	
+	public boolean isSkippable();
+
+	public void setSkippable(boolean skippable);
+	
 }

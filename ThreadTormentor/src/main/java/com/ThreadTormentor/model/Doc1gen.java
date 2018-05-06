@@ -29,6 +29,9 @@ public class Doc1gen extends Job implements Work{
 	public Doc1gen() {	}
 	
 	public int execute(Map<String,String> inputVars) throws Exception {
+		if(skippable) {
+			return 0;
+		}
 		vars= new HashMap<String, String>(inputVars);
 		vars.put(KEY_HIP_FILE, hip);
 		vars.put(KEY_OPS_TEMPLATE_FILE, opsTemplateFile);
@@ -70,7 +73,7 @@ public class Doc1gen extends Job implements Work{
 			createConfigFile(vars.get(KEY_OPS_TEMPLATE_FILE),vars.get(KEY_OPS_FINAL_FILE) ,vars);
 		} catch (IOException e1) {
 			e1.printStackTrace();
-			return STATUS_CONFIG_GEN_ERROR;			
+			return STATUS_CONFIG_ERROR;			
 		}
 
 		EXEC = vars.get(KEY_EXECUTION_COMMAND);

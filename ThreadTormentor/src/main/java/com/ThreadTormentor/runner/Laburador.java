@@ -41,32 +41,31 @@ public class Laburador implements Runnable{
 					say("START "+laburo.toString());
 				}
 				result = laburo.execute(vars);
+				if(result != 0) {
+					end= new Date();
+					say(getDescription("ERROR",laburo,start,end,result));
+					status=STATUS_FINALIZADO_ERROR;
+					entregador.halt();
+					return;
+				} 
+				end= new Date();
+				entregador.addTerminado(laburo.getId());
+				if(laburo.getNext()!=null && laburo.getNext().size()>0) {
+					entregador.recoverJobs(laburo.getNext());
+				}
+				if(!(laburo instanceof Sleeper)) {
+					say(getDescription("END~~",laburo,start,end,result));
+				}
+
+				laburo= entregador.getLaburo();
 			}catch (Exception e ) {
 				end= new Date();
-				say("ERROR EXCEPTION! "+laburo.toString()+" "+getTimeDiff(start, end));
+				say(getDescription("ERROR EXCEPTION!",laburo,start,end,result));
 				e.printStackTrace();
 				status=STATUS_FINALIZADO_ERROR;
 				entregador.halt();
 				return;
 			}
-			if(result != 0) {
-				end= new Date();
-				say("ERROR "+laburo.toString()+" "+getTimeDiff(start, end)+" err:"+result);
-				status=STATUS_FINALIZADO_ERROR;
-				entregador.halt();
-				return;
-			} 
-			end= new Date();
-			entregador.addTerminado(laburo.getId());
-			if(laburo.getNext()!=null && laburo.getNext().size()>0) {
-				entregador.recoverJobs(laburo.getNext());
-			}
-			if(!(laburo instanceof Sleeper)) {
-				say("END "+laburo.toString()+" "+getTimeDiff(start, end));
-			}
-			
-
-			laburo= entregador.getLaburo();
 		}
 		status=STATUS_FINALIZADO_OK;
 	}
@@ -86,5 +85,16 @@ public class Laburador implements Runnable{
 
 	public void say(String in) {
 		System.out.println("[T"+id+"]: "+in);
+	}
+	
+	private String getDescription(String resultString, Work laburo, Date start, Date end, int exitStatus) {
+		String out=resultString+" "+laburo.toString()+" ";
+		if(laburo.isSkippable())
+			out = out+"(SKIPPED) ";
+		else
+			out = out+getTimeDiff(start, end)+" ";
+		if(exitStatus!=0)
+			out = out+" errNro:"+exitStatus;
+		return out;
 	}
 }

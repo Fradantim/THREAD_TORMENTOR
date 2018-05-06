@@ -11,6 +11,9 @@ public class Echoer extends Job implements Work{
 	}
 	
 	public int execute(Map<String,String> vars) {
+		if(skippable) {
+			return 0;
+		}
 		System.out.println("Echoer("+id+"): "+toString());
 		return 0;
 	}

@@ -16,8 +16,9 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     	<constructor-arg value="ML" />
 	</bean>
 	
+	<!-- 
 	
-	<!-- <bean id="Job_Start" class="com.ThreadTormentor.model.PlaceboJob">
+	 <bean id="Job_Start" class="com.ThreadTormentor.model.PlaceboJob">
 		<property name="next"> 
 			<list>
 	        	 <ref bean ="Job_ETL_PIEZA_INICIO"/>
@@ -70,7 +71,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	
 	
 	
-	<bean id="Job_Doc1gen_IMPRENTA" class="com.ThreadTormentor.model.Doc1gen">
+	<bean id="Job_DOC1GEN_IMPRENTA" class="com.ThreadTormentor.model.Doc1gen">
 		<property name="hip" value="$DOC1_GEN_SRC$/AMDOCS_T3_CICLICA.hip" />
 		<property name="opsTemplateFile" value="$DOC1_GEN_SRC$/config_doc1gen_N.ops" />
 		<property name="tmpWorkingPath" value="$DOC1_GEN_TMP$" />
@@ -82,12 +83,13 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
         </property>
 		<property name="next">
 			<list>
-	        	 <ref bean ="Job_FIN"/>
+	        	 <ref bean ="Job_CONTROL_IMPRENTA_CARILLAS_IMPARES"/>
+	        	 <ref bean ="Job_GENERA_SPOOLES"/>
 	        </list>
         </property>
 	</bean>
 	
-	<bean id="Job_Doc1gen_E2Vault" class="com.ThreadTormentor.model.Doc1gen">
+	<bean id="Job_DOC1GEN_E2Vault" class="com.ThreadTormentor.model.Doc1gen">
 		<property name="hip" value="$DOC1_GEN_SRC$/AMDOCS_T3_CICLICA.hip" />
 		<property name="opsTemplateFile" value="$DOC1_GEN_SRC$/config_doc1gen_S.ops" />
 		<property name="tmpWorkingPath" value="$DOC1_GEN_TMP$" />
@@ -113,9 +115,9 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	        	 <ref bean ="Job_FIN"/>
 	        </list>
         </property>
-	</bean> -->
+	</bean>
 	
-	<bean id="Job_Doc1gen_IMPRENTA" class="com.ThreadTormentor.model.SimpleCmdLineJob">
+	<bean id="Job_GENERA_SPOOLES" class="com.ThreadTormentor.model.SimpleCmdLineJob">
 		<property name="binWithPath" value="$PERL_BIN_PATH$/perl" />
 		<property name="params" value="$DOC1_SRC$/impre_doc1_generaSpool.pl -c $CANTIDAD_HOJAS_SPOOL$ -m $MASK$ -ip $DOC1_DIS_OUT$ -op $DOC1_PCE_IN$" />
 		<property name="next">
@@ -123,7 +125,19 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	        	 <ref bean ="Job_FIN"/>
 	        </list>
         </property>
-	</bean> 
+	</bean>  -->
+	
+	<bean id="Job_DOC1PCE_DESPACHADOR_PARALELO" class="com.ThreadTormentor.model.Doc1pceParallelDispatcher">
+		<property name="iniTemplateFile" value="$DOC1_PCE_SRC$/pce.ini" />
+		<property name="tmpWorkingPath" value="$DOC1_PCE_TMP$" />
+		<property name="inputPath" value="$DOC1_PCE_IN$" />
+		<property name="inputRegex" value=".*$MASK$.*.TMP" />
+		<property name="next">
+			<list>
+	        	 <ref bean ="Job_FIN"/>
+	        </list>
+        </property>
+	</bean>  
 	
 	<bean id="Job_FIN" class="com.ThreadTormentor.model.Finisher">
 		<property name="next"> 

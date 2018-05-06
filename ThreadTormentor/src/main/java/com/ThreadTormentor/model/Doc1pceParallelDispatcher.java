@@ -10,25 +10,28 @@ import com.ThreadTormentor.runner.Entregador;
 
 public class Doc1pceParallelDispatcher extends Job implements Work{
 
-	//private List<String> plnConfigTemplateFiles;
-	private String hip;
+	private static final String KEY_INPUT_REGEX = "inputRegex";
+	private static final String KEY_INPUT_PATH = "inputPath";
+	
 	private String inputRegex;
 	private String inputPath;
 	private String tmpWorkingPath;
-	private String iniFile;
+	private String iniTemplateFile;
 	
 	public Doc1pceParallelDispatcher() {	}
 	
 	
 	public int execute(Map<String, String> vars) throws Exception {
-		ArrayList<Work> newWorkers = new ArrayList<Work>();
+		ArrayList<Work> newWorks = new ArrayList<Work>();
 		
+		vars.put(KEY_INPUT_REGEX, inputRegex);
+		vars.put(KEY_INPUT_PATH, inputPath);
 		vars=reInterpolate(vars);
-		if(! new File(inputPath).isDirectory()) {
+		if(! new File(vars.get(KEY_INPUT_PATH)).isDirectory()) {
 	        throw new IllegalArgumentException(inputPath+" no puede ser abierto como un directorio.");
 	    }
-	    final Pattern p = Pattern.compile(inputRegex); // careful: could also throw an exception!
-	    File[] matchedFiles = (new File(inputPath)).listFiles(new FileFilter() {
+	    final Pattern p = Pattern.compile(vars.get(KEY_INPUT_REGEX)); // careful: could also throw an exception!
+	    File[] matchedFiles = (new File(vars.get(KEY_INPUT_PATH))).listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File file) {
 				return p.matcher(file.getName()).matches();
@@ -36,21 +39,23 @@ public class Doc1pceParallelDispatcher extends Job implements Work{
 		});
 	    
 		for(File inputFile : matchedFiles) {
-			Doc1pce worker = new Doc1pce();
-			worker.setHip(hip);
-			worker.setTmpWorkingPath(tmpWorkingPath);
-			//worker.setNext(getNext());
+			//System.out.println(inputFile.toString());
+			Doc1pce newWork = new Doc1pce();
+			newWork.setInputFile(inputFile.toString());
+			newWork.setIniTemplateFile(iniTemplateFile);
+			newWork.setTmpWorkingPath(tmpWorkingPath);
+			newWork.setNext(getNext());
 			
-			//newWorkers.add(worker);
+			newWorks.add(newWork);
 		}
 		
-		setNext(newWorkers);
-		Entregador.getInstance().addJobs(newWorkers);
+		setNext(newWorks);
+		Entregador.getInstance().addJobs(newWorks);
 		return 0;
 	}
 	
 	public String toString() {
-		return getClass().getSimpleName()+" "+ getId() +" (x"+inputRegex+")";
+		return getClass().getSimpleName()+" "+ getId() +" ("+inputPath+"/"+inputRegex+")";
 	}
 	
 	public int getId() {
@@ -92,23 +97,12 @@ public class Doc1pceParallelDispatcher extends Job implements Work{
 		this.inputPath = inputPath;
 	}
 
-
-	public String getHip() {
-		return hip;
+	public String getIniTemplateFile() {
+		return iniTemplateFile;
 	}
 
 
-	public void setHip(String hip) {
-		this.hip = hip;
-	}
-
-
-	public String getIniFile() {
-		return iniFile;
-	}
-
-
-	public void setIniFile(String iniFile) {
-		this.iniFile = iniFile;
+	public void setIniTemplateFile(String iniTemplateFile) {
+		this.iniTemplateFile = iniTemplateFile;
 	}
 }

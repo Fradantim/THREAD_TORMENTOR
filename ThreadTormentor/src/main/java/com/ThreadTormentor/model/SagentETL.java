@@ -17,6 +17,9 @@ public class SagentETL extends Job implements Work{
 	public SagentETL (){	}
 	
 	public int execute(Map<String,String> vars) {
+		if(skippable) {
+			return 0;
+		}
 		vars.put(KEY_PLN_CONF_TEMPLATE_FILE, plnConfigTemplateFile);
 		vars.put(KEY_TMP_WORKING_PATH, tmpWorkingPath);
 				
