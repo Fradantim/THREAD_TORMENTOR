@@ -16,26 +16,16 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     	<constructor-arg value="ML" />
 	</bean>
 	
-	<!-- 
-	
-	 <bean id="Job_Start" class="com.ThreadTormentor.model.PlaceboJob">
-		<property name="next"> 
-			<list>
-	        	 <ref bean ="Job_ETL_PIEZA_INICIO"/>
-	        </list>
-		</property>
-	</bean>
-	
 	<bean id="Job_ETL_PIEZA_INICIO" class="com.ThreadTormentor.model.SagentETL">
 		<property name="plnConfigTemplateFile" value="$DOC1_ETL_SRC$/00-TMA_FILTRO_CLIENTES_SIN_COMP.conf" />
 		<property name="tmpWorkingPath" value="$DOC1_ETL_TMP$" />
 		<property name="next">
 			<list>
-	        	 <ref bean ="Job_ETL_PIEZA_DESPACHADOR_PARALELO"/>
+	        	 <ref bean ="Job_FIN"/>
 	        </list>
         </property>
 	</bean>
-	
+	<!--
 	<bean id="Job_ETL_PIEZA_DESPACHADOR_PARALELO" class="com.ThreadTormentor.model.SagentETLParallelDispatcher">
 		<property name="tmpWorkingPath" value="$DOC1_ETL_TMP$" />
 		<property name="next">
@@ -125,7 +115,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	        	 <ref bean ="Job_FIN"/>
 	        </list>
         </property>
-	</bean>  -->
+	</bean>  
 	
 	<bean id="Job_DOC1PCE_DESPACHADOR_PARALELO" class="com.ThreadTormentor.model.Doc1pceParallelDispatcher">
 		<property name="iniTemplateFile" value="$DOC1_PCE_SRC$/pce.ini" />
@@ -138,6 +128,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	        </list>
         </property>
 	</bean>  
+	-->
 	
 	<bean id="Job_FIN" class="com.ThreadTormentor.model.Finisher">
 		<property name="next"> 

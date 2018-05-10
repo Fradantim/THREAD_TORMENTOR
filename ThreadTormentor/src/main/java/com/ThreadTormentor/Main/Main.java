@@ -21,6 +21,7 @@ import com.ThreadTormentor.runner.Entregador;
 public class Main {
 	public static void main (String args[]) {
 		Date start= new Date();
+		System.out.println("INICIO: "+start);
 		if(args.length<1) {
 			System.out.println("Indicar archivo de parametros como primer parametro.\n");
 			System.exit(1);
@@ -67,7 +68,8 @@ public class Main {
 		
 		
 		//JARPATH new File(MyClass.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-		String inputLoteContextFile=vars.get("IN_APPLICATION_CONTEXT_PATH")+"/"+"context"+vars.get("LOTE_NRO")+".xml";
+		//String inputLoteContextFile=vars.get("IN_APPLICATION_CONTEXT_PATH")+"/"+"context"+vars.get("LOTE_NRO")+".xml";
+		String inputLoteContextFile="context"+vars.get("LOTE_NRO")+".xml";
 		ApplicationContext inputLoteContext = new FileSystemXmlApplicationContext(inputLoteContextFile);
 		
 		
@@ -95,10 +97,11 @@ public class Main {
 			e1.printStackTrace();
 		}
 		
-		System.out.println("FINMAIN");
+		
 		((ConfigurableApplicationContext)inputLoteContext).close();
 		Date end = new Date();
 		long segs = (end.getTime()-start.getTime())/1000;
+		System.out.print("FINMAIN "+ end + " ");
 		System.out.println(String.format("(%02d:%02d:%02d)",segs/3600,segs%3600/60,segs%60));
 		System.exit(result);
 	}
