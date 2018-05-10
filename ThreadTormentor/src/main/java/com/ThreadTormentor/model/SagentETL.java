@@ -60,7 +60,7 @@ public class SagentETL extends Job implements Work{
 	        	String[] arr = readLine.split("=");
 	        	if(arr[0].startsWith("ARCH-IN")) {
 	        		File inputFile = new File(arr[1]);
-	        		if(!inputFile.exists() && !inputFile.toString().substring(inputFile.toString().lastIndexOf("/") +1).equals("NUL")) { 
+	        		if(!inputFile.exists() && !inputFile.toString().substring(inputFile.toString().length()	- 3).equals("NUL")) { 
 	        		    errores=errores+ "No existe "+inputFile+"\n";
 	        		}
 	        	}

@@ -68,8 +68,8 @@ public class Main {
 		
 		
 		//JARPATH new File(MyClass.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-		//String inputLoteContextFile=vars.get("IN_APPLICATION_CONTEXT_PATH")+"/"+"context"+vars.get("LOTE_NRO")+".xml";
-		String inputLoteContextFile="context"+vars.get("LOTE_NRO")+".xml";
+		String inputLoteContextFile=vars.get("IN_APPLICATION_CONTEXT_PATH")+"/"+"context"+vars.get("LOTE_NRO")+".xml";
+		//String inputLoteContextFile="context"+vars.get("LOTE_NRO")+".xml";
 		ApplicationContext inputLoteContext = new FileSystemXmlApplicationContext(inputLoteContextFile);
 		
 		
