@@ -72,7 +72,7 @@ public class Laburador implements Runnable{
 	
 	private String getTimeDiff(Date start, Date end) {
 		long segs = (end.getTime()-start.getTime())/1000;
-		return String.format("(%03d:%02d:%02d)",segs/3600,segs%3600/60,segs%60);
+		return String.format("(%02d:%02d:%02d)",segs/3600,segs%3600/60,segs%60);
 	}
 
 	public int getStatus() {

@@ -1,0 +1,41 @@
+<project name="THREAD_TORMENTOR-deploy" default="execute-build" basedir=".">
+	
+	<!-- ........................................................ -->
+	<target name="execute-build">
+		<antcall target="build">
+			<param name="project" value="doce-batch" />
+		</antcall>
+	</target>
+
+	<target name="build">
+		<exec dir="." executable="cmd">
+			<arg value="/c" />
+			<arg value="mvn" />
+			<arg value="clean:clean" />
+			<arg value="eclipse:eclipse" />		
+			<arg value="install" />
+			<arg value="-Dmaven.test.skip=true" />
+			<arg value="-e" />
+		</exec>
+	</target>
+	
+	<target name="execute-clean">
+		<antcall target="clean">
+			<param name="project" value="THREAD_TORMENTOR" />
+		</antcall>
+	</target>
+	
+	<target name="clean">
+			<exec dir="." executable="cmd">
+				<arg value="/c" />
+				<arg value="java -version" />
+				<arg value="mvn" />
+				<arg value="clean:clean" />
+			
+				<arg value="-Dmaven.test.skip=true" />
+				<arg value="-e" />
+			</exec>
+		</target>
+
+</project>
+

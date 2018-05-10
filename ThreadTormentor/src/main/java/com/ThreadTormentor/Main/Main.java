@@ -3,6 +3,7 @@ package com.ThreadTormentor.Main;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -19,7 +20,7 @@ import com.ThreadTormentor.runner.Entregador;
 
 public class Main {
 	public static void main (String args[]) {
-		
+		Date start= new Date();
 		if(args.length<1) {
 			System.out.println("Indicar archivo de parametros como primer parametro.\n");
 			System.exit(1);
@@ -66,7 +67,7 @@ public class Main {
 		
 		
 		//JARPATH new File(MyClass.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-		String inputLoteContextFile="context"+vars.get("LOTE").substring(vars.get("LOTE").length()-2)+".xml";
+		String inputLoteContextFile=vars.get("IN_APPLICATION_CONTEXT_PATH")+"/"+"context"+vars.get("LOTE_NRO")+".xml";
 		ApplicationContext inputLoteContext = new FileSystemXmlApplicationContext(inputLoteContextFile);
 		
 		
@@ -96,6 +97,9 @@ public class Main {
 		
 		System.out.println("FINMAIN");
 		((ConfigurableApplicationContext)inputLoteContext).close();
+		Date end = new Date();
+		long segs = (end.getTime()-start.getTime())/1000;
+		System.out.println(String.format("(%02d:%02d:%02d)",segs/3600,segs%3600/60,segs%60));
 		System.exit(result);
 	}
 }

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.ThreadTormentor</groupId>
+	<artifactId>ThreadTormentor</artifactId>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+
+	<name>ThreadTormentor</name>
+	<description>ThreadTormentor</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<jdk.version>1.8</jdk.version>
+	</properties>
+
+	<dependencies>
+		<!-- <dependency> <groupId>log4j</groupId> <artifactId>log4j</artifactId> 
+				<version>1.2.17</version> </dependency> -->
+	
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>5.0.5.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.0.5.RELEASE</version>
+		</dependency>
+	</dependencies>
+
+	<!--  <build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>-->
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+				</configuration>
+            </plugin>
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+					<excludes>
+						<exclude>**/target/*</exclude>
+						<exclude>**.properties</exclude>
+				  	</excludes>
+				  	<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <transformers>
+    					<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+      						<resource>META-INF/spring.handlers</resource>
+    					</transformer>
+    					<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+      						<resource>META-INF/spring.schemas</resource>
+    					</transformer>
+    					<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  			<manifestEntries>
+                    			<Main-Class>com.ThreadTormentor.Main.Main</Main-Class>
+                    			<Build-Number>1</Build-Number>
+                  			</manifestEntries>
+                		</transformer>
+  					</transformers>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-jar-with-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>
